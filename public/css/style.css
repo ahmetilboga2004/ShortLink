@@ -1,0 +1,71 @@
+main {
+    min-height: 80vh;
+}
+
+.feature-icon {
+    width: 2rem;
+    height: 2rem;
+}
+
+.icon-square {
+    width: 3rem;
+    height: 3rem;
+}
+
+.text-shadow-1 {
+    text-shadow: 0 .125rem .25rem rgba(0, 0, 0, .25);
+}
+
+.text-shadow-2 {
+    text-shadow: 0 .25rem .5rem rgba(0, 0, 0, .25);
+}
+
+.text-shadow-3 {
+    text-shadow: 0 .5rem 1.5rem rgba(0, 0, 0, .25);
+}
+
+
+.feature-icon-small {
+    width: 3rem;
+    height: 3rem;
+}
+
+
+.img-effect img {
+    opacity: 1;
+    -webkit-transition: .3s ease-in-out;
+    transition: .3s ease-in-out;
+}
+
+.img-effect img:hover {
+    opacity: .5;
+}
+
+.card {
+    transition: .3s transform cubic-bezier(.155, 1.105, .295, 1.12), .3s box-shadow, .3s -webkit-transform cubic-bezier(.155, 1.105, .295, 1.12);
+    cursor: pointer;
+}
+
+.card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, .12), 0 4px 8px rgba(0, 0, 0, .06);
+}
+
+
+@media (max-width: 768px) {
+    .card {
+        flex-direction: row;
+    }
+
+    .card .col-md-4 {
+        flex-basis: 100%;
+    }
+
+    .card .col-md-8 {
+        order: 2;
+    }
+
+    #faq-text-area {
+        margin-top: 30px;
+    }
+}

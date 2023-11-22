@@ -1,0 +1,49 @@
+{% extends "layouts/base.html" %}
+{% block title %}
+    Dashboard
+{% endblock %}
+{% if is_header %}
+    {% include "layouts/_header.html" %}
+{% endif %}
+{% block content %}
+    <div class="mt-5 py-5">
+        <div id="add-link">
+            <div class="card shadow border-0 bg-body-tertiary mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">New Link</h5>
+                    <p class="card-text">Add Fasting A New Link</p>
+                    <form class="row g-3 align-items-center">
+                        <div class="col-md-3">
+                            <label class="visually-hidden" for="url-name">Name</label>
+                            <input type="text" class="form-control" name="url-name" id="url-name" placeholder="URL Name">
+                        </div>
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <span class="input-group-text" id="url-adress">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-link-45deg" viewbox="0 0 16 16">
+                                        <path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1.002 1.002 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4.018 4.018 0 0 1-.128-1.287z"></path>
+                                        <path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243z"></path>
+                                    </svg>
+                                </span>
+                                <input type="text" class="form-control" placeholder="Url Adress" aria-label="Url Adress" aria-describedby="url-adress">
+                            </div>
+                        </div>
+
+                        <div class="col-md">
+                            <label class="visually-hidden" for="inlineFormSelectPref">Time</label>
+                            <select class="form-select" id="inlineFormSelectPref">
+                                <option selected="selected">Never</option>
+                                <option value="1">One</option>
+                                <option value="2">Two</option>
+                                <option value="3">Three</option>
+                            </select>
+                        </div>
+                        <div class="col-md">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

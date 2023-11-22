@@ -1,0 +1,30 @@
+{
+  "name": "shortlink",
+  "version": "1.0.0",
+  "description": "ShortLink is a simple and user-friendly link shortening service that efficiently shortens long URLs, enabling users to share links quickly and effectively.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ahmetilboga2004/ShortLink.git"
+  },
+  "keywords": [
+    "Link",
+    "Short",
+    "Url",
+    "Share"
+  ],
+  "author": "Ahmet İlboga",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ahmetilboga2004/ShortLink/issues"
+  },
+  "homepage": "https://github.com/ahmetilboga2004/ShortLink#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "nunjucks": "^3.2.4"
+  }
+}

@@ -1,0 +1,87 @@
+{% extends "layouts/base.html" %}
+{% block title %}
+    Anasayfa
+{% endblock title %}
+{% block header %}
+    {% if is_header %}
+        {% include "layouts/_header.html" %}
+    {% endif %}
+{% endblock %}
+{% block content %}
+    <div class="row" data-masonry="{&quot;percentPosition&quot;: true }" style="position: relative; height: 1190px;">
+
+        {# İMAGE 1 #}
+        <div class="col-sm-6 col-lg-4 mb-4" style="position: absolute; left: 0%; top: 0px;">
+            <div class="card img-effect">
+                <img src="images/index-img-1.jpeg" class="img-fluid rounded" alt="">
+            </div>
+        </div>
+
+        {# CARD 1 #}
+        <div class="col-sm-6 col-lg-4 mb-4" style="position: absolute; left: 50%; top: 0px;">
+            <div class="card text-bg-warning p-3">
+                <div class="card-body">
+                    <h5 class="card-title">LEFT-50 TOP-0 SPEED</h5>
+                    <p class="card-text">Accelerate your tasks by instantly shortening long URLs, making them concise and user-friendly, thus saving you valuable time.</p>
+                </div>
+            </div>
+        </div>
+
+        {# İMAGE 2 #}
+        <div class="col-sm-6 col-lg-4 mb-4" style="position: absolute; left: 50%; top: 252px;">
+            <div class="card img-effect">
+                <img src="images/index-img-2.jpeg" class="img-fluid rounded" alt="">
+            </div>
+        </div>
+
+        {# CARD-2 #}
+        <div class="col-sm-6 col-lg-4 mb-4" style="position: absolute; left: 0%; top: 434px;">
+            <div class="card text-bg-success p-3">
+                <div class="card-body">
+                    <h5 class="card-title">LEFT-0 TOP-434 CREATE</h5>
+                    <p class="card-text">With the ability to simplify complex links, you can easily create and share the links you need.</p>
+                </div>
+            </div>
+        </div>
+
+        {# CARD-3 #}
+        <div class="col-sm-6 col-lg-4 mb-4" style="position: absolute; left: 0%; top: 624px;">
+            <div class="card text-bg-danger p-3">
+                <div class="card-body">
+                    <h5 class="card-title">LEFT-0 TOP-624 DELETE</h5>
+                    <p class="card-text">Effortlessly remove unnecessary or potentially insecure links, allowing you to organize your online presence effectively.</p>
+                </div>
+            </div>
+        </div>
+
+        {# İMAGE 3 #}
+        <div class="col-sm-6 col-lg-4 mb-4" style="position: absolute; left: 50%; top: 654px;">
+            <div class="card img-effect">
+                <img src="images/index-img-3.jpeg" class="img-fluid rounded" alt="">
+            </div>
+        </div>
+
+        {# CARD-4 #}
+        <div class="col-sm-6 col-lg-4 mb-4" style="position: absolute; left: 0%; top: 826px;">
+            <div class="card img-effect">
+                <img src="images/index-img-4.jpeg" class="img-fluid rounded" alt="">
+            </div>
+        </div>
+
+        {# İMAGE 4 #}
+        <div class="col-sm-6 col-lg-4 mb-4" style="position: absolute; left: 50%; top: 940px;">
+            <div class="card">
+                <div class="card text-bg-primary p-3">
+                    <div class="card-body">
+                        <h5 class="card-title">LEFT-0 TOP-826 SHARING</h5>
+                        <p class="card-text">Quickly share your shortened links via social media platforms or email, engaging a broader audience and facilitating content sharing.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block script_files %}
+<script src="https://cdn.jsdelivr.net/npm/masonry-layout@4.2.2/dist/masonry.pkgd.min.js" integrity="sha384-GNFwBvfVxBkLMJpYMOABq3c+d3KnQxudP/mGPkzpZSTYykLBNsZEnG2D9G/X/+7D" crossorigin="anonymous" async="async"></script>
+{% endblock %}
