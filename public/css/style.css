@@ -31,24 +31,30 @@ main {
 }
 
 
-.img-effect img {
+.img-effect img,
+.icon-effect {
     opacity: 1;
     -webkit-transition: .3s ease-in-out;
     transition: .3s ease-in-out;
 }
 
-.img-effect img:hover {
+.img-effect img:hover,
+.icon-effect:hover {
     opacity: .5;
 }
 
-.card {
+.card-effect {
     transition: .3s transform cubic-bezier(.155, 1.105, .295, 1.12), .3s box-shadow, .3s -webkit-transform cubic-bezier(.155, 1.105, .295, 1.12);
     cursor: pointer;
 }
 
-.card:hover {
+.card-effect:hover {
     transform: scale(1.05);
     box-shadow: 0 10px 20px rgba(0, 0, 0, .12), 0 4px 8px rgba(0, 0, 0, .06);
+}
+
+.sortable {
+    cursor: pointer;
 }
 
 
