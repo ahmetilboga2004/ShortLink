@@ -53,6 +53,10 @@ app.get("/forgot", (req, res) => {
   res.render("forgot", { is_header: false });
 });
 
+app.get("/adminDashboard", (req, res) => {
+  res.render("adminDashboard", { is_header: false });
+});
+
 app.listen(port, () => {
   console.log("Server is running...");
 });

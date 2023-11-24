@@ -1,0 +1,41 @@
+<div class="modal" id="editLinkModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Link</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="edit-name" class="col-form-label">Name:</label>
+                        <input type="text" class="form-control" id="edit-name"/>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit-url" class="col-form-label">Url Adress:</label>
+                        <input type="url" class="form-control" id="edit-url" readonly="readonly"/>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit-short-url" class="col-form-label">Short Link:</label >
+                        <input type="text" class="form-control" id="edit-short-url" readonly="readonly"/>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit-left-time" class="col-form-label">Left Time:</label >
+                        <select class="form-select" id="edit-left-time" aria-label="Select Left Time">
+                            <option selected="selected">Never</option>
+                            <option value="1">One</option>
+                            <option value="2">Two</option>
+                            <option value="3">Three</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    Close
+                </button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,5 +1,5 @@
 main {
-    min-height: 80vh;
+    min-height: 90vh;
 }
 
 .feature-icon {
@@ -59,9 +59,9 @@ main {
 
 
 @media (max-width: 768px) {
-    .card {
+    /* .card {
         flex-direction: row;
-    }
+    } */
 
     .card .col-md-4 {
         flex-basis: 100%;
