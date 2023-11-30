@@ -46,11 +46,14 @@ for (const header of headers) {
     );
   });
 }
-document.querySelectorAll(".action").forEach(function (th) {
-  th.innerHTML = ` <button type="button" class="btn border-0 p-1 copy-btn">📋</button>
+document.querySelectorAll(".action-link").forEach(function (td) {
+  td.innerHTML = ` <button type="button" class="btn border-0 p-1 copy-btn">📋</button>
   <button type="button" class="btn border-0 p-1" data-bs-toggle="modal" data-bs-target="#editLinkModal">✏️
   </button>
   <button type="button" class="btn border-0 p-1" data-bs-toggle="modal" data-bs-target="#deleteLinkModal">🗑️</button>`;
+});
+document.querySelectorAll(".action-user").forEach(function (td) {
+  td.innerHTML = `<button type="button" class="btn border-0 p-1" data-bs-toggle="modal" data-bs-target="#editUserModal">✏️</button>`;
 });
 
 document.querySelectorAll(".copy-btn").forEach(function (button) {
@@ -73,6 +76,7 @@ function copyToClipboard(text) {
   document.body.appendChild(toastContainer);
   var toast = document.createElement("div");
   toast.className = "toast";
+  toast.classList.add("bg-body-tertiary");
   toast.innerHTML = `
   <div class="toast-header">
     <strong class="me-auto">Copying successful</strong>

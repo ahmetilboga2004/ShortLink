@@ -1,8 +1,8 @@
-<div class="modal" id="editLinkModal" tabindex="-1">
+<div class="modal" id="editUserModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Edit Link</h5>
+                <h5 class="modal-title">Edit User</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -12,27 +12,22 @@
                         <input type="text" class="form-control" id="edit-name"/>
                     </div>
                     <div class="mb-3">
-                        <label for="edit-url" class="col-form-label">Url Adress:</label>
+                        <label for="edit-url" class="col-form-label">E-mail:</label>
                         <input type="url" class="form-control" id="edit-url" readonly="readonly"/>
                     </div>
                     <div class="mb-3">
-                        <label for="edit-short-url" class="col-form-label">Short Link:</label >
+                        <label for="edit-short-url" class="col-form-label">Last Login Date:</label >
                         <input type="text" class="form-control" id="edit-short-url" readonly="readonly"/>
                     </div>
                     <div class="mb-3">
-                        <label for="edit-left-time" class="col-form-label">Left Time:</label >
-                        <select class="form-select" id="edit-left-time" aria-label="Select Left Time">
-                            <option selected="selected">Never</option>
-                            <option value="1">One</option>
-                            <option value="2">Two</option>
-                            <option value="3">Three</option>
-                        </select>
+                        <label for="edit-left-time" class="col-form-label">Total Link:</label >
+
                     </div>
                 </form>
             </div>
             <div class="modal-footer d-flex justify-content-between">
                 <div>
-                    <button type="button" class="btn btn-danger" data-bs-target="#deleteLinkModal" data-bs-toggle="modal">Delete Link</button>
+                    <button type="button" class="btn btn-danger" data-bs-target="#deleteUserModal" data-bs-toggle="modal">Delete User</button>
                 </div>
                 <div>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">

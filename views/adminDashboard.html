@@ -18,9 +18,12 @@
         {% include "layouts/_searchUser.html" %}
         {% include "layouts/_searchLink.html" %}
     </div>
+    {% include "layouts/_editUserModal.html" %}
+    {% include "layouts/_deleteUserModal.html" %}
     {% include "layouts/_editLinkModal.html" %}
     {% include "layouts/_deleteLinkModal.html" %}
 {% endblock %}
 {% block script_files %}
     <script src="js/table.js"></script>
+    <script src="js/modal.js"></script>
 {% endblock %}
