@@ -1,14 +1,24 @@
 // * THIRD-PARTY MODULES
 const express = require("express");
+const mongoose = require("mongoose");
 const nunjucks = require("nunjucks");
-
+const bodyParser = require("body-parser");
+const session = require("express-session");
 // * CORE MODULES
 const path = require("path");
 
 // * MY MODULES
+// # Routes
+const pageRoutes = require("./routes/pageRoutes");
+const userRoutes = require("./routes/userRoutes");
 
 const app = express();
-const port = 3000;
+
+// Mongoose connect to MongoDb
+mongoose.connect("mongodb://localhost:27017/shortDb", {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
 // ! TEMPLATE ENGINE
 app.engine("html", nunjucks.render);
@@ -21,81 +31,22 @@ nunjucks.configure("views", {
 
 // ! MIDDLEWARES
 app.use(express.static("public"));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(
+  session({
+    secret: "your-secret-key",
+    resave: false,
+    saveUninitialized: true,
+  })
+);
 
 // ! ROUTES
-app.get("/", (req, res) => {
-  res.render("index", {
-    is_header: true,
-    pageName: "home",
-  });
-});
-
-app.get("/about", (req, res) => {
-  res.render("about", {
-    is_header: true,
-    pageName: "about",
-  });
-});
-
-app.get("/faq", (req, res) => {
-  res.render("faq", {
-    is_header: false,
-    pageName: "faq",
-  });
-});
-
-app.get("/contact", (req, res) => {
-  res.render("contact", {
-    is_header: false,
-    pageName: "contact",
-  });
-});
-
-app.get("/dashboard", (req, res) => {
-  res.render("dashboard", {
-    is_header: false,
-    pageName: "dashboard",
-  });
-});
-
-app.get("/login", (req, res) => {
-  res.render("login", {
-    is_header: false,
-    pageName: "login",
-  });
-});
-
-app.get("/register", (req, res) => {
-  res.render("register", {
-    is_header: false,
-    pageName: "register",
-  });
-});
-
-app.get("/reset", (req, res) => {
-  res.render("reset", {
-    is_header: false,
-    pageName: "reset",
-  });
-});
-
-app.get("/forgot", (req, res) => {
-  res.render("forgot", {
-    is_header: false,
-    pageName: "forgot",
-  });
-});
-
-app.get("/adminDashboard", (req, res) => {
-  res.render("adminDashboard", {
-    is_header: false,
-    pageName: "adminDashboard",
-  });
-});
+app.use("/", pageRoutes);
+app.use("/user", userRoutes);
 
 // RUN LİSTEN SERVER
+const port = process.env.port || 3000;
 app.listen(port, () => {
-  console.log("Server is running...");
+  console.log(`Server is running on ${port} Port`);
 });
