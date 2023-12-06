@@ -11,16 +11,16 @@
     <section class="h-100 mt-5 p-5 position-relative">
         <div class="container h-100 mt-5 position-absolute top-50 start-50 translate-middle">
             <div class="row justify-content-sm-center h-100">
-                <div class="col-xxl-4 col-xl-5 col-lg-5 col-md-7 col-sm-9">
+                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-8 col-sm-9">
                     <div class="text-center">
                         <img src="images/logo-2.png" alt="logo" width="200">
                     </div>
-                    <div class="card shadow">
+                    <div class="card mb-3 shadow">
                         <div class="card-body p-5">
                             <h1 class="fs-4 card-title fw-bold mb-4">Login</h1>
-                            <form method="POST" class="needs-validation" novalidate="" autocomplete="off">
+                            <form method="POST" action="/login" class="needs-validation" id="login-form" novalidate="" autocomplete="off">
                                 <div class="mb-3">
-                                    <label class="mb-2 text-muted" for="email">E-Mail Address</label>
+                                    <label class="mb-2 text-muted" for="email">Email</label>
                                     <input id="email" type="email" class="form-control" name="email" value="" required="required" autofocus="autofocus">
                                     <div class="invalid-feedback">
                                         Email is invalid
@@ -58,11 +58,11 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
     </section>
+    {% include "layouts/_messages.html" %}
 {% endblock %}
 {% block script_files %}
     <script src="js/auth.js"></script>

@@ -1,19 +1,43 @@
 // * THIRD-PARTY
 const express = require("express");
+const connectEnsureLogin = require("connect-ensure-login");
 // * MY-MODULES
 const pageController = require("../controllers/pageController");
+const authMiddleware = require("../middlewares/authMiddleware");
 
 const router = express.Router();
 
-router.route("/").get(pageController.getIndexPage);
-router.route("/about").get(pageController.getAboutPage);
-router.route("/faq").get(pageController.getFaqPage);
-router.route("/contact").get(pageController.getContactPage);
-router.route("/dashboard").get(pageController.getDashboardPage);
-router.route("/adminDashboard").get(pageController.getAdminDashboardPage);
-router.route("/login").get(pageController.getLoginPage);
-router.route("/register").get(pageController.getRegisterPage);
-router.route("/reset").get(pageController.getResetPage);
-router.route("/forgot").get(pageController.getForgotPage);
+router.get("/", pageController.getIndexPage);
+router.get("/about", pageController.getAboutPage);
+router.get("/faq", pageController.getFaqPage);
+router.get("/contact", pageController.getContactPage);
+router.get(
+  "/dashboard",
+  connectEnsureLogin.ensureLoggedIn("/login"),
+  authMiddleware.afterLoginCheckVerify,
+  pageController.getDashboardPage
+);
+router.get(
+  "/login",
+  connectEnsureLogin.ensureLoggedOut("/dashboard"),
+  pageController.getLoginPage
+);
+router.get(
+  "/register",
+  connectEnsureLogin.ensureLoggedOut("/dashboard"),
+  pageController.getRegisterPage
+);
+
+router.get(
+  "/reset",
+  connectEnsureLogin.ensureLoggedIn("/login"),
+  authMiddleware.afterLoginCheckVerify,
+  pageController.getResetPage
+);
+router.get(
+  "/forgot",
+  connectEnsureLogin.ensureLoggedOut("/dashboard"),
+  pageController.getForgotPage
+);
 
 module.exports = router;

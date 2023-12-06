@@ -1,0 +1,59 @@
+<div id="error-toast-container" class="position-fixed bottom-0 end-0 p-3">
+    {% if errors %}
+        {% for error in errors %}
+            <div class="toast show mb-2 text-bg-danger" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header">
+                    <strong class="me-auto">Error</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">
+                    {{ error.message }}
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+    {% if success_msg.length > 0 %}
+        <div class="toast show mb-2 alert alert-success" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <strong class="me-auto">Success</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                {{ success_msg }}
+            </div>
+        </div>
+    {% endif %}
+    {% if error_msg.length > 0 %}
+        <div class="toast show mb-2 alert alert-danger" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <strong class="me-auto">Error</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                {{ error_msg }}
+            </div>
+        </div>
+    {% endif %}
+    {% if error.length > 0 %}
+        <div class="toast show mb-2 alert alert-danger" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <strong class="me-auto">Error</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                {{ error }}
+            </div>
+        </div>
+    {% endif %}
+    {% if success.length > 0 %}
+        <div class="toast show mb-2 alert alert-danger" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <strong class="me-auto">Error</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                {{ success }}
+            </div>
+        </div>
+    {% endif %}
+</div>

@@ -33,13 +33,6 @@ exports.getDashboardPage = (req, res) => {
   });
 };
 
-exports.getAdminDashboardPage = (req, res) => {
-  res.render("adminDashboard", {
-    is_header: false,
-    pageName: "adminDashboard",
-  });
-};
-
 exports.getLoginPage = (req, res) => {
   res.render("login", {
     is_header: false,

@@ -1,24 +1,26 @@
 // * THIRD-PARTY MODULES
 const express = require("express");
-const mongoose = require("mongoose");
+const passport = require("passport");
 const nunjucks = require("nunjucks");
 const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
 const session = require("express-session");
+const MongoDBSession = require("connect-mongodb-session")(session);
+
 // * CORE MODULES
 const path = require("path");
 
 // * MY MODULES
+const UserModel = require("./models/User");
+const dotenv = require("dotenv");
+const db = require("./config/database");
+
 // # Routes
 const pageRoutes = require("./routes/pageRoutes");
-const userRoutes = require("./routes/userRoutes");
+const authRoutes = require("./routes/authRoutes");
 
 const app = express();
-
-// Mongoose connect to MongoDb
-mongoose.connect("mongodb://localhost:27017/shortDb", {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+dotenv.config();
 
 // ! TEMPLATE ENGINE
 app.engine("html", nunjucks.render);
@@ -29,24 +31,51 @@ nunjucks.configure("views", {
   express: app,
 });
 
+// ! MONGO STORE
+const store = new MongoDBSession({
+  uri: process.env.MONGO_URI,
+  collection: "sessions",
+});
+
 // ! MIDDLEWARES
 app.use(express.static("public"));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser());
 app.use(
   session({
-    secret: "your-secret-key",
+    secret: process.env.SECRET_KEY,
     resave: false,
     saveUninitialized: true,
+    store: store,
   })
 );
 
-// ! ROUTES
-app.use("/", pageRoutes);
-app.use("/user", userRoutes);
+// Need to require the entire Passport config module so app.js knows about it
+require("./config/passport");
 
-// RUN LİSTEN SERVER
-const port = process.env.port || 3000;
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.use(async (req, res, next) => {
+  console.log(req.session);
+  console.log(req.user);
+  res.locals.user = req.isAuthenticated() ? req.user : null;
+  next();
+});
+
+// ! ROUTES
+app.use(pageRoutes);
+app.use(authRoutes);
+
+// 404 Not Found middleware
+app.use((req, res, next) => {
+  res.send("404 Not Found");
+});
+
+// RUN LISTEN SERVER
+const port = process.env.PORT || 3000;
+db();
 app.listen(port, () => {
   console.log(`Server is running on ${port} Port`);
 });
