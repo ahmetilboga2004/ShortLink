@@ -43,12 +43,35 @@ exports.registerUser = async (req, res, next) => {
     const { fullname, email, password } = req.body;
     const errors = {};
 
-    if (!validator.isAlpha(fullname)) {
+    const validateName = (fullname) => {
+      const nameParts = fullname.split(" ");
+
+      if (nameParts.length !== 2) {
+        return false; // İsim ve soyisim arasında sadece bir boşluk olmalı
+      }
+
+      const [firstName, lastName] = nameParts;
+
+      // İsim ve soyisimde sadece harf içermelidir
+      if (
+        !validator.isAlpha(firstName, "tr-TR") ||
+        !validator.isAlpha(lastName, "tr-TR")
+      ) {
+        return false;
+      }
+
+      return true;
+    };
+
+    // Kullanımı
+    if (!validateName(fullname)) {
+      const error = {};
       error.fullname = "Lütfen isminizi kontrol edin!";
+      // Hata işlemleri
     }
 
     if (!validator.isEmail(email)) {
-      error.email = "Lütfen geçerli bir email adresi girin!";
+      errors.email = "Lütfen geçerli bir email adresi girin!";
     }
 
     if (!validator.isLength(password, { min: 6 })) {

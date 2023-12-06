@@ -26,6 +26,19 @@ exports.checkVerifyEmail = async (req, res, next) => {
     }
     next();
   } catch (error) {
+    if (error) {
+      const email = req.query.email;
+      try {
+        const user = await User.findOne({ email });
+        if (user && user.isVerified) {
+          return res.redirect("/login");
+        } else {
+          next();
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
     console.error("Doğrulama kontrolü hatası:", error);
   }
 };
