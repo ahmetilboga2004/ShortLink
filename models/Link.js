@@ -17,9 +17,10 @@ const LinkSchema = new Schema({
     unique: true,
   },
   click: {
-    type: Boolean,
-    default: false,
+    type: Number,
+    default: 0,
   },
+  leftTime: Date,
   createdBy: {
     type: Schema.Types.ObjectId,
     ref: "User",

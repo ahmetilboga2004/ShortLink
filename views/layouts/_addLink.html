@@ -3,7 +3,7 @@
         <div class="card-body">
             <h3 class="card-title">⭐ New Link</h3>
             <p class="card-text">Add Fasting A New Link</p>
-            <form class="row g-3 align-items-center">
+            <form method="POST" action="/short-link" class="row g-3 align-items-center">
                 <div class="col-md-6">
                     <div class="input-group">
                         <span class="input-group-text" id="url-adress">
@@ -12,21 +12,22 @@
                                 <path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243z"></path>
                             </svg>
                         </span>
-                        <input type="url" class="form-control" placeholder="Url Adress" aria-label="Url Adress" aria-describedby="url-adress"/>
+                        <input type="url" class="form-control" name="urlAdress" placeholder="Url Adress" aria-label="Url Adress" aria-describedby="url-adress"/>
                     </div>
                 </div>
                 <div class="col-md-3">
-                    <label class="visually-hidden" for="url-name">Name</label>
-                    <input type="text" class="form-control" name="url-name" id="url-name" placeholder="URL Name"/>
+                    <label class="visually-hidden" for="urlName">Name</label>
+                    <input type="text" class="form-control" name="urlName" id="urlName" placeholder="URL Name"/>
                 </div>
 
                 <div class="col-md">
                     <label class="visually-hidden" for="inlineFormSelectPref">Time</label >
-                    <select class="form-select" id="inlineFormSelectPref">
+                    <select class="form-select" name="urlTime" id="inlineFormSelectPref">
                         <option selected="selected">Never</option>
-                        <option value="1">One</option>
-                        <option value="2">Two</option>
-                        <option value="3">Three</option>
+                        <option value="1 day">After 1 day</option>
+                        <option value="1 week">After 1 week</option>
+                        <option value="1 month">After 1 month</option>
+                        <option value="3 months">After 3 months</option>
                     </select>
                 </div>
                 <div class="col-md">

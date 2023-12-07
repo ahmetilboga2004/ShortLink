@@ -46,11 +46,14 @@ for (const header of headers) {
     );
   });
 }
-document.querySelectorAll(".action-link").forEach(function (td) {
-  td.innerHTML = ` <button type="button" class="btn border-0 p-1 copy-btn">📋</button>
-  <button type="button" class="btn border-0 p-1" data-bs-toggle="modal" data-bs-target="#editLinkModal">✏️
-  </button>
-  <button type="button" class="btn border-0 p-1" data-bs-toggle="modal" data-bs-target="#deleteLinkModal">🗑️</button>`;
+document.querySelectorAll(".action-copy").forEach(function (td) {
+  td.innerHTML = ` <button type="button" class="btn border-0 p-1 copy-btn">📋</button>`;
+});
+document.querySelectorAll(".action-edit").forEach(function (td) {
+  td.innerHTML = `<button type="button" class="btn border-0 p-1" data-bs-toggle="modal" data-bs-target="#editLinkModal">✏️</button>`;
+});
+document.querySelectorAll(".action-delete").forEach(function (td) {
+  td.innerHTML = `<button type="button" class="btn border-0 p-1" data-bs-toggle="modal" data-bs-target="#deleteLinkModal">🗑️</button>`;
 });
 document.querySelectorAll(".action-user").forEach(function (td) {
   td.innerHTML = `<button type="button" class="btn border-0 p-1" data-bs-toggle="modal" data-bs-target="#editUserModal">✏️</button>`;

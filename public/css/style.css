@@ -59,9 +59,10 @@ main {
 
 
 @media (max-width: 768px) {
-    /* .card {
-        flex-direction: row;
-    } */
+
+    .table-responsive {
+        font-size: 12px;
+    }
 
     .card .col-md-4 {
         flex-basis: 100%;

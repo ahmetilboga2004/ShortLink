@@ -18,6 +18,7 @@ const db = require("./config/database");
 // # Routes
 const pageRoutes = require("./routes/pageRoutes");
 const authRoutes = require("./routes/authRoutes");
+const linkRoutes = require("./routes/linkRoutes");
 
 const app = express();
 dotenv.config();
@@ -67,6 +68,7 @@ app.use(async (req, res, next) => {
 // ! ROUTES
 app.use(pageRoutes);
 app.use(authRoutes);
+app.use(linkRoutes);
 
 // 404 Not Found middleware
 app.use((req, res, next) => {
