@@ -9,7 +9,6 @@ const router = express.Router();
 
 router.get("/", pageController.getIndexPage);
 router.get("/about", pageController.getAboutPage);
-router.get("/faq", pageController.getFaqPage);
 router.get("/contact", pageController.getContactPage);
 router.get(
   "/dashboard",

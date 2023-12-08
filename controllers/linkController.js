@@ -4,6 +4,7 @@ const validator = require("validator");
 
 // * MY-MODULES
 const Link = require("../models/Link");
+const User = require("../models/User");
 
 const getOriginalLink = async (shortLink) => {
   try {
@@ -39,6 +40,16 @@ exports.getLink = async (req, res) => {
     });
   }
 };
+
+const sortLinksByDate = async (query) => {
+  try {
+    const links = await query.sort({ createdAt: -1 }).exec();
+    return links;
+  } catch (error) {
+    throw error;
+  }
+};
+
 exports.getAllLinks = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -68,12 +79,33 @@ exports.getAllLinks = async (req, res) => {
   }
 };
 
-const sortLinksByDate = async (query) => {
+const sortUsersByDate = async (query) => {
   try {
-    const links = await query.sort({ createdAt: -1 }).exec();
-    return links;
+    const users = await query.sort({ createdAt: -1 }).exec();
+    return users;
   } catch (error) {
     throw error;
+  }
+};
+
+exports.getAllUsers = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const userRole = req.user.role;
+
+    let users;
+
+    if (userRole === "admin" || userRole === "mod") {
+      users = await sortUsersByDate(User.find());
+    }
+
+    if (!users || users.length === 0) {
+      return res.json({ success: false, message: "Users not found" });
+    }
+
+    return res.json(users);
+  } catch (error) {
+    return res.json({ success: false, message: "Internal Server Error" });
   }
 };
 

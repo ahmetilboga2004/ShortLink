@@ -1,5 +1,5 @@
-// Diğer dosyadan fonksiyonu içe aktar
-const toastCreate = (success, message) => {
+// Toast oluşturma fonksiyonu
+const toastCreate = (header, success, message) => {
   // Toast oluştur
   var toastContainer = document.createElement("div");
   toastContainer.classList.add(
@@ -12,22 +12,21 @@ const toastCreate = (success, message) => {
   document.body.appendChild(toastContainer);
   var toast = document.createElement("div");
   toast.className = "toast";
-  toast.classList.add("bg-body-tertiary");
+  toast.classList.add(`bg-body-${success}`);
   toast.innerHTML = `
-    <div class="toast-header">
-      <strong class="me-auto">Copying successful</strong>
-      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-    </div>
-    <div class="toast-body">
-      ${message}
-    </div>`;
+      <div class="toast-header">
+        <div class="me-auto">${header}</div>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+      <div class="toast-body">
+        ${message}
+      </div>`;
   toastContainer.appendChild(toast);
 
   // Bootstrap Toast gösterimi
   var bootstrapToast = new bootstrap.Toast(toast);
   bootstrapToast.show();
 };
-
 let allLinksData;
 
 const getAllLinks = (searchValue = "") => {
@@ -40,11 +39,14 @@ const getAllLinks = (searchValue = "") => {
         const linkCountDiv = document.querySelector("#linkCount");
         let countLink = data.length > 0 ? data.length : 0;
         linkCountDiv.innerHTML = `Total ${countLink} Rows`;
+
+        const notLink = document.querySelector("#notLinks");
         allLinksData = data;
         const linkTableBody = document.querySelector("#linkTable tbody");
         // Tabloyu temizle
         linkTableBody.innerHTML = "";
         if (data.length > 0) {
+          notLink.innerText = "";
           // Eğer bir searchValue varsa, filtreleme yap
           if (searchValue.length > 0) {
             data = data.filter(
@@ -75,7 +77,6 @@ const getAllLinks = (searchValue = "") => {
             `;
           });
         } else {
-          const notLink = document.querySelector("#notLinks");
           notLink.innerText = "Link Bulunamadı";
         }
       })
@@ -107,7 +108,7 @@ searchLinkInput.addEventListener("input", function () {
 document.addEventListener("click", function (event) {
   if (event.target.classList.contains("edit-link-btn")) {
     const linkId = event.target.getAttribute("data-linkid");
-    fillEditModal(linkId);
+    fillEditLinkModal(linkId);
   }
 });
 
@@ -135,7 +136,7 @@ function formatAndDisplayDate(isoDateString) {
 }
 
 // Edit butonlarına tıklanınca modalı dolduran fonksiyon
-function fillEditModal(linkId) {
+function fillEditLinkModal(linkId) {
   const link = allLinksData.find((item) => item._id === linkId);
 
   if (link) {
@@ -180,7 +181,7 @@ function deleteLinkModal(linkId) {
       .then((response) => response.json())
       .then((data) => {
         getAllLinks();
-        toastCreate("Deleted", data.message);
+        toastCreate("Deleted", "success", data.message);
       })
       .catch((error) => console.log(error));
   }
@@ -208,8 +209,8 @@ for (const header of headers) {
   const headerName = header.innerHTML;
   header.innerHTML = headerName + " " + iconSortDown;
   header.addEventListener("click", () => {
-    const headerSvg = header.querySelector("svg");
-    if (headerSvg.classList.contains("bi-sort-down")) {
+    const headerLinkSvg = header.querySelector("svg");
+    if (headerLinkSvg.classList.contains("bi-sort-down")) {
       header.innerHTML = headerName + " " + iconSortUp;
     } else {
       header.innerHTML = headerName + " " + iconSortDown;
@@ -245,39 +246,8 @@ for (const header of headers) {
 
 function copyToClipboard(text) {
   navigator.clipboard.writeText(text);
-  toastCreate("Copying successful", text);
+  toastCreate("Copying successful", "success", text);
 }
-
-const shortLinkForm = document.querySelector("#shortLinkForm");
-
-shortLinkForm.addEventListener("submit", (event) => {
-  event.preventDefault();
-  const formData = new FormData(shortLinkForm);
-
-  // Fetch API kullanarak verileri Express.js server'ına gönderme
-  fetch("/short-link", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(Object.fromEntries(formData)),
-  })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error(
-          `Server returned an error: ${response.status} ${response.statusText}`
-        );
-      }
-      return response.json();
-    })
-    .then((data) => {
-      // Başarılı bir şekilde işlendikten sonra yapılacak işlemleri buraya ekleyin
-      getAllLinks();
-    })
-    .catch((error) => {
-      console.error("Error sending data to server:", error);
-    });
-});
 
 const copyEditLinkBtn = document.querySelector("#copyEditLinkBtn");
 copyEditLinkBtn.addEventListener("click", () => {

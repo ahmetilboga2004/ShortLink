@@ -12,13 +12,6 @@ exports.getAboutPage = (req, res) => {
   });
 };
 
-exports.getFaqPage = (req, res) => {
-  res.render("faq", {
-    is_header: false,
-    pageName: "faq",
-  });
-};
-
 exports.getContactPage = (req, res) => {
   res.render("contact", {
     is_header: false,

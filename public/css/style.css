@@ -71,8 +71,4 @@ main {
     .card .col-md-8 {
         order: 2;
     }
-
-    #faq-text-area {
-        margin-top: 30px;
-    }
 }

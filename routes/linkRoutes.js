@@ -7,6 +7,7 @@ const linkController = require("../controllers/linkController");
 const router = express.Router();
 
 router.get("/get-user-links", linkController.getAllLinks);
+router.get("/get-all-users", linkController.getAllUsers);
 router.get("/:shortLink", linkController.getLink);
 router.post("/short-link", linkController.shortLink);
 router.delete("/:linkId", linkController.deleteLink);

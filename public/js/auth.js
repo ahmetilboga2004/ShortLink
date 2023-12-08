@@ -7,14 +7,14 @@
     loginForm: {
       endpoint: "/login",
       successCallback: (data) => {
-        toastCreate("Login successful", data.message);
+        toastCreate("Login successful", "success", data.message);
         setInterval(() => {
           window.location.href = "/dashboard";
-        }, 1500);
+        }, 2000);
       },
       errorCallback: (data) => {
         // Hata mesajını göster
-        toastCreate("Login failed", data.message);
+        toastCreate("Login failed", "warning", data.message);
 
         // Sunucudan dönen ek hata bilgisini konsola yazdır
         console.error("Server error:", data.message);
@@ -23,7 +23,7 @@
     registerForm: {
       endpoint: "/register",
       successCallback: (data) => {
-        toastCreate("Registration successful", data.message);
+        toastCreate("Registration successful", "success", data.message);
         setInterval(() => {
           window.location.href = "/login";
         }, 1500);
@@ -31,8 +31,20 @@
       errorCallback: (data) => {
         // Hata mesajlarını göster
         data.errors.forEach((error) => {
-          toastCreate("Registration failed", error);
+          toastCreate("Registration failed", "warning", error);
         });
+      },
+    },
+    shortLinkForm: {
+      endpoint: "/short-link",
+      successCallback: (data) => {
+        // Başarılı bir şekilde işlendikten sonra yapılacak işlemleri buraya ekleyin
+        getAllLinks();
+        toastCreate("Link Shortened", "success", data.message);
+      },
+      errorCallback: (data) => {
+        // Hata mesajını göster
+        toastCreate("Short Link Failed", "warning", data.message);
       },
     },
     // Diğer formlar için benzer davranışları ekleyebilirsiniz
@@ -102,7 +114,7 @@
   };
 
   // Toast oluşturma fonksiyonu
-  const toastCreate = (success, message) => {
+  const toastCreate = (header, success, message) => {
     // Toast oluştur
     var toastContainer = document.createElement("div");
     toastContainer.classList.add(
@@ -115,10 +127,10 @@
     document.body.appendChild(toastContainer);
     var toast = document.createElement("div");
     toast.className = "toast";
-    toast.classList.add("bg-body-tertiary");
+    toast.classList.add(`bg-${success}`, "text-dark");
     toast.innerHTML = `
       <div class="toast-header">
-        <div class="me-auto">${success}</div>
+        <div class="me-auto">${header}</div>
         <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
       </div>
       <div class="toast-body">

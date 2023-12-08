@@ -6,34 +6,67 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form>
-                    <div class="mb-3">
-                        <label for="edit-fullname" class="col-form-label">Name Surname:</label>
-                        <input type="text" class="form-control" id="edit-fullname"/>
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <h5>Name Surname:</h5>
+                        </div>
+                        <div class="col-md-9">
+                            <p id="modalUserFullname">Ahmet</p>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="edit-url" class="col-form-label">E-mail:</label>
-                        <input type="url" class="form-control" id="edit-url" readonly="readonly"/>
-                    </div>
-                    <div class="mb-3">
-                        <label for="edit-short-url" class="col-form-label">Last Login Date:</label >
-                        <input type="text" class="form-control" id="edit-short-url" readonly="readonly"/>
-                    </div>
-                    <div class="mb-3">
-                        <label for="edit-left-time" class="col-form-label">Total Link:</label >
 
+                    <div class="row">
+                        <div class="col-md-3">
+                            <h5>Email:</h5>
+                        </div>
+                        <div class="col-md-9">
+                            <p id="modalUserEmail">test@gmail.com</p>
+                        </div>
                     </div>
-                </form>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <h5>Role:</h5>
+                        </div>
+                        <div class="col-md-9">
+                            <p id="modalUserRole">Admin</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <h5>Verify:</h5>
+                        </div>
+                        <div class="col-md-9">
+                            <p id="modalUserVerify">Yes</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <h5>Last Login:</h5>
+                        </div>
+                        <div class="col-md-9">
+                            <p id="modalUserLastLogin"></p>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-3">
+                            <h5>Created At:</h5>
+                        </div>
+                        <div class="col-md-9">
+                            <p id="modalUserCreatedAt"></p>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer d-flex justify-content-between">
                 <div>
-                    <button type="button" class="btn btn-danger" data-bs-target="#deleteUserModal" data-bs-toggle="modal">Delete User</button>
+                    <button type="button" class="btn btn-danger" id="editModalDeleteUser" data-bs-dismiss="modal">Delete User</button>
                 </div>
                 <div>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                         Close
                     </button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
                 </div>
             </div>
         </div>

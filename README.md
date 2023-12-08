@@ -44,7 +44,6 @@ ShortLink
 └─ views
    ├─ contact.html
    ├─ dashboard.html
-   ├─ faq.html
    ├─ forgot.html
    ├─ index.html
    ├─ login.html
