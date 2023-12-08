@@ -24,17 +24,65 @@ exports.getLink = async (req, res) => {
       // Tıklanma sayısını artır
       link.click++;
       await link.save();
-      console.log(link);
-      res.render("redirect", {
+      return res.render("redirect", {
         is_header: false,
         originalUrl: link.originalUrl,
       });
     } else {
-      res.status(404).send("404 Not Found");
+      return res.json({ success: false, message: "Hata Link bulunamadı" });
     }
   } catch (error) {
     console.error(error);
+    return res.json({
+      success: false,
+      message: `Beklenmedik bir hata oluştu: ${error.message}`,
+    });
   }
+};
+exports.getAllLinks = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const userRole = req.user.role;
+
+    let links;
+
+    if (userRole === "admin") {
+      links = await sortLinksByDate(Link.find());
+    } else if (userRole === "mod") {
+      links = await sortLinksByDate(
+        Link.find({
+          $or: [{ createdBy: userId }, { role: "mod" }],
+        })
+      );
+    } else {
+      links = await sortLinksByDate(Link.find({ createdBy: userId }));
+    }
+
+    if (!links || links.length === 0) {
+      return res.json({ success: false, message: "Links not found" });
+    }
+
+    return res.json(links);
+  } catch (error) {
+    return res.json({ success: false, message: "Internal Server Error" });
+  }
+};
+
+const sortLinksByDate = async (query) => {
+  try {
+    const links = await query.sort({ createdAt: -1 }).exec();
+    return links;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const isValidName = (name) => {
+  // Harf ve rakam kontrolü
+  const alphanumericRegex = /^[a-zA-Z0-9ğüşöçİĞÜŞÖÇ\s]*$/;
+
+  // Harf ve rakam dışında karakter içeriyorsa false döndür
+  return alphanumericRegex.test(name);
 };
 
 exports.shortLink = async (req, res) => {
@@ -46,13 +94,10 @@ exports.shortLink = async (req, res) => {
     if (!urlAdress && !validator.isURL(urlAdress)) {
       errors.urlAdress = "Lütfen geçerli bir url girin!";
     }
-    // urlName değerinin boş olup olmadığını kontrol et
-    if (!validator.isEmpty(urlName)) {
-      // urlName'in alfanumerik olup olmadığını kontrol et
-      if (!validator.isAlphanumeric(urlName)) {
-        errors.urlName =
-          "Lütfen sadece harflerden ve rakamlardan oluşan bir isim giriniz.";
-      }
+    // Kullanımı
+    if (!validator.isEmpty(urlName) && !isValidName(urlName)) {
+      errors.urlName =
+        "Lütfen sadece harflerden ve rakamlardan oluşan bir isim girin.";
     }
 
     // urlTime'ı uygun bir zaman formatına çevir
@@ -79,7 +124,7 @@ exports.shortLink = async (req, res) => {
 
     // Hatalar kontrol ediliyor
     if (Object.keys(errors).length > 0) {
-      return res.status(400).json({ errors });
+      return res.json({ errors });
     }
 
     let shortLink = generateShortLink();
@@ -101,14 +146,13 @@ exports.shortLink = async (req, res) => {
     await newLink.save();
 
     // Başarılı yanıtı gönder
-    res.status(200).json({
+    return res.json({
       success: true,
       message: "Link başarıyla oluşturuldu.",
       data: newLink,
     });
   } catch (error) {
-    console.log("Link oluşturulurken Bir hata oluştu", error);
-    res.status(500).json({
+    return res.json({
       success: false,
       message: error.message,
     });
@@ -140,19 +184,18 @@ exports.deleteLink = async (req, res) => {
     const linkId = req.params.linkId;
     const deletedLink = await Link.findByIdAndDelete(linkId);
     if (deletedLink) {
-      res.status(200).json({
+      return res.json({
         status: true,
         message: "Link successfully deleted.",
       });
     } else {
-      res.status(404).json({
+      return res.json({
         status: false,
         message: "Link not found.",
       });
     }
   } catch (error) {
-    console.log(error);
-    res.status(500).json({
+    return res.json({
       status: false,
       message: error.message,
     });

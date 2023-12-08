@@ -10,15 +10,13 @@ const router = express.Router();
 
 router.post("/register", authController.registerUser);
 // Kullanıcı girişi işlemi
-router.post(
-  "/login",
-  passport.authenticate("local", { failureRedirect: "/login" }),
-  (req, res) => {
-    res.redirect("/dashboard");
-  }
-);
+router.post("/login", authController.loginUser);
 
-router.get("/verify", authMiddleware.checkVerifyEmail, authController.verify);
+router.get(
+  "/verify",
+  connectEnsureLogin.ensureLoggedIn("/login"),
+  authController.verify
+);
 
 router.get(
   "/logout",

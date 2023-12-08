@@ -31,9 +31,15 @@ async function sendVerificationEmail(email, verificationKey) {
 
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
-      console.error("E-posta gönderilemedi:", error);
+      res.json({
+        success: false,
+        message: "Mail gönderilemedi",
+      });
     } else {
-      console.log("E-posta gönderildi:", info.response);
+      res.json({
+        success: true,
+        message: "Mail başarıyla gönderildi.",
+      });
     }
   });
 }
@@ -79,7 +85,7 @@ exports.registerUser = async (req, res, next) => {
     }
     // Hatalar kontrol ediliyor
     if (Object.keys(errors).length > 0) {
-      return res.status(400).json({ errors });
+      return res.json({ errors });
     }
 
     const verificationKey = crypto.randomBytes(32).toString("hex");
@@ -97,23 +103,60 @@ exports.registerUser = async (req, res, next) => {
       const savedUser = await newUser.save();
       await sendVerificationEmail(email, verificationKey);
       if (savedUser) {
-        console.log(savedUser);
-        res.redirect("/login");
+        res.json({
+          success: true,
+          message: "Mail başarılı bir şekilde gönderildi.",
+        });
       }
     } catch (error) {
-      console.log(error);
-      res.redirect("/register");
+      res.json({
+        success: false,
+        message: "Mail gönderme işlemi başarısız oldu.",
+      });
     }
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    return res.json({ success: false, message: error.message });
   }
 };
 
-// Kullanıcı doğrulama
-exports.verify = async (req, res) => {
-  const { email, key } = req.query;
+exports.loginUser = (req, res, next) => {
+  passport.authenticate("local", (err, user, info) => {
+    if (err || !user) {
+      // Giriş başarısız
+      return res.json({
+        success: false,
+        message: "Giriş başarısız. Kullanıcı adı veya şifre hatalı.",
+      });
+    }
+    // Giriş başarılı, oturumu başlat
+    req.logIn(user, (err) => {
+      if (err) {
+        console.error(err);
+      }
+      // Oturumu başlattıktan sonra istediğiniz işlemleri yapabilirsiniz
+      return res.json({
+        success: true,
+        message: "Giriş başarılı. Kontrol paneline yönlendiriliyorsunuz...",
+      });
+    });
+  })(req, res, next);
+};
 
+exports.verify = async (req, res) => {
   try {
+    const { email, key } = req.query;
+    if (!email || !key) {
+      const user = await User.findOne({ _id: req.user.id });
+      if (user.isVerified) {
+        return res.redirect("/dashboard");
+      } else {
+        return res.render("verify", {
+          is_header: false,
+          message: "Lütfen hesabınızı doğrulayın!",
+        });
+      }
+    }
+
     const user = await User.findOne({ email, verificationKey: key });
     if (user) {
       // Kullanıcıyı doğrula
@@ -121,19 +164,19 @@ exports.verify = async (req, res) => {
       user.verificationKey = "";
       await user.save();
 
-      console.log("Hesabınız başarıyla doğrulandı");
-      res.redirect("/dashboard");
+      return res.redirect("/dashboard");
     } else {
-      console.log("Geçersiz doğrulama bağlantısı");
-      res.render("verify", {
+      return res.render("verify", {
         is_header: false,
         message:
           "Bağlantı süresi bitmiş yada geçersiz bir doğrulama bağlantısı..",
       });
     }
   } catch (error) {
-    console.error("Doğrulama işlemi hatası:", error);
-    res.status(500).send("Doğrulama işlemi sırasında bir hata oluştu.");
+    return res.status(500).json({
+      success: false,
+      message: "Doğrulama işlemi sırasında bir hata oluştu.",
+    });
   }
 };
 

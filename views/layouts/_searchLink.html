@@ -19,14 +19,14 @@
                                             <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
                                         </svg>
                                     </span>
-                                    <input type="text" class="form-control" placeholder="Search" aria-label="Search" aria-describedby="search-link"/>
+                                    <input type="text" id="searchLinkInput" class="form-control" placeholder="Search" aria-label="Search" aria-describedby="search-link"/>
                                 </div>
                             </div>
                         </form>
                     </div>
                     <div>
-                        <button type="button" class="btn border-0 text-primary-emphasis">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-arrow-repeat" viewbox="0 0 16 16">
+                        <button type="button" class="btn btn-sm btn-outline-info" id="refreshLinkButton">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-arrow-repeat" viewbox="0 0 16 16">
                                 <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z"></path>
                                 <path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3M3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9z"></path>
                             </svg>
@@ -38,109 +38,22 @@
                 <table id="linkTable" class="table table-striped table-hover">
                     <thead>
                         <th class="sortable" data-sort="Name" data-key="Name">Name</th>
-                        <th class="sortable" data-sort="Url" data-key="Url">Url Address</th>
+                        <th class="sortable" data-sort="Url" data-key="Url">Url</th>
+                        <th class="sortable" data-sort="ShortLink" data-key="ShortLink">Short Url</th>
                         <th class="sortable" data-sort="View" data-key="View">View</th>
-                        <th class="sortable" data-sort="CreatedDate" data-key="CreatedDate">
-                            Created Date
-                        </th>
-                        <th class="sortable" data-sort="LeftTime" data-key="LeftTime">
-                            Left Time
-                        </th>
                         <th></th>
                         <th></th>
                         <th></th>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td data-key="Name">Ahmet</td>
-                            <td data-key="Url">https://instagram.com/ahmet_ilboga47</td>
-                            <td data-key="View">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye" viewbox="0 0 16 16">
-                                    <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/>
-                                    <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0"/>
-                                </svg>
-                                30
-                            </td>
-                            <td data-key="CreatedDate">20/08/2023</td>
-                            <td data-key="LeftTime">01/01/2024</td>
-                            <td class="action-copy"></td>
-                            <td class="action-edit"></td>
-                            <td class="action-delete"></td>
-                        </tr>
-
-                        <tr>
-                            <td data-key="Name">Mehmet</td>
-                            <td data-key="Url">https://t.me/ai2py</td>
-                            <td data-key="View">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye" viewbox="0 0 16 16">
-                                    <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/>
-                                    <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0"/>
-                                </svg>
-                                30
-                            </td>
-                            <td data-key="CreatedDate">20/08/2023</td>
-                            <td data-key="LeftTime">01/01/2024</td>
-                            <td class="action-copy"></td>
-                            <td class="action-edit"></td>
-                            <td class="action-delete"></td>
-                        </tr>
-
-                        <tr>
-                            <td data-key="Name">Twitter</td>
-                            <td data-key="Url">https://twitter.com/u/ahmet_ilboga47</td>
-                            <td data-key="View">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye" viewbox="0 0 16 16">
-                                    <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/>
-                                    <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0"/>
-                                </svg>
-                                30
-                            </td>
-                            <td data-key="CreatedDate">20/08/2023</td>
-                            <td data-key="LeftTime">01/01/2024</td>
-                            <td class="action-copy"></td>
-                            <td class="action-edit"></td>
-                            <td class="action-delete"></td>
-                        </tr>
-
-                        <tr>
-                            <td data-key="Name">Discord</td>
-                            <td data-key="Url">https://discord.com/@ai2py</td>
-                            <td data-key="View">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye" viewbox="0 0 16 16">
-                                    <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/>
-                                    <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0"/>
-                                </svg>
-                                30
-                            </td>
-                            <td data-key="CreatedDate">20/08/2023</td>
-                            <td data-key="LeftTime">01/01/2024</td>
-                            <td class="action-copy"></td>
-                            <td class="action-edit"></td>
-                            <td class="action-delete"></td>
-                        </tr>
-
-                        <tr>
-                            <td data-key="Name">Facebook</td>
-                            <td data-key="Url">https://facebook.com/ahmet_ilboga47</td>
-                            <td data-key="View">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye" viewbox="0 0 16 16">
-                                    <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/>
-                                    <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0"/>
-                                </svg>
-                                30
-                            </td>
-                            <td data-key="CreatedDate">20/08/2023</td>
-                            <td data-key="LeftTime">01/01/2024</td>
-                            <td class="action-copy"></td>
-                            <td class="action-edit"></td>
-                            <td class="action-delete"></td>
-                        </tr>
-                    </tbody>
+                    <tbody></tbody>
                 </table>
             </div>
             <div id="pagination">
+                <div class="text-center">
+                    <h1 id="notLinks"></h1>
+                </div>
                 <div class="card-body d-flex justify-content-between">
-                    <div>Total 23 Rows</div>
+                    <div id="linkCount">Total 23 Rows</div>
                     <div>
                         <nav aria-label="Page navigation example">
                             <ul class="pagination pagination-sm">

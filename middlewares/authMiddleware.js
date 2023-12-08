@@ -6,10 +6,7 @@ exports.afterLoginCheckVerify = async (req, res, next) => {
 
     if (user && !user.isVerified) {
       // Kullanıcı girişi yapıldıktan sonra, ancak hesabı doğrulanmamışsa, isteği hemen sonlandırarak yönlendirme yapabilirsiniz.
-      return res.render("verify", {
-        is_header: false,
-        message: "Lütfen hesabınızı doğrulayın.",
-      }); // Doğrulama sayfasına yönlendirme
+      return res.redirect("/verify"); // Doğrulama sayfasına yönlendirme
     }
 
     next();

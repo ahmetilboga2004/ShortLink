@@ -59,8 +59,6 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use(async (req, res, next) => {
-  console.log(req.session);
-  console.log(req.user);
   res.locals.user = req.isAuthenticated() ? req.user : null;
   next();
 });

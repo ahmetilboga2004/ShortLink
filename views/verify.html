@@ -10,13 +10,11 @@
 {% endblock %}
 {% block content %}
     <div class="p-5 rounded bg-body-tertiary position-absolute top-50 start-50 translate-middle">
+        <h1>🔑 Hesabınızı Doğrulayın</h1>
         {% if message %}
-            <h1>🔑 Geçersiz bağlantı</h1>
-            <br>
             <p class="lead">⚠️
                 {{ message }}</p>
         {% else %}
-            <h1>🔑 Hesabınızı Doğrulayın</h1>
             <br>
             <p class="lead">⚠️ Lütfen Link kısaltmaya başlamadan önce hesabınızı doğruladığınızdan emin olun.</p>
         {% endif %}
