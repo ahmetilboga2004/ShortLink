@@ -1,56 +1,69 @@
 let allUsersData;
 
-const getAllUsers = (searchValue = "") => {
+const getCurrentUser = async () => {
   try {
-    fetch("/get-all-users")
-      .then((response) => {
-        return response.json();
-      })
-      .then((data) => {
-        const userCountDiv = document.querySelector("#userCount");
-        let countUser = data.length > 0 ? data.length : 0;
-        userCountDiv.innerHTML = `Total ${countUser} Rows`;
+    const response = await fetch("/get-current-user");
+    const data = await response.json();
+    return data.user;
+  } catch (error) {
+    console.error("Oturum bilgisi alınamadı:", error);
+    throw error; // hatayı yeniden fırlat, bu sayede çağıran kod hatayı ele alabilir
+  }
+};
 
-        const notUser = document.querySelector("#notUsers");
-        allUsersData = data;
-        const userTableBody = document.querySelector("#userTable tbody");
-        // Tabloyu temizle
-        userTableBody.innerHTML = "";
-        if (data.length > 0) {
-          notUser.innerText = "";
-          // Eğer bir searchValue varsa, filtreleme yap
-          if (searchValue.length > 0) {
-            data = data.filter(
-              (user) =>
-                user.fullname
-                  .toLowerCase()
-                  .includes(searchValue.toLowerCase()) ||
-                user.email.toLowerCase().includes(searchValue.toLowerCase()) ||
-                user.role.toLowerCase().includes(searchValue.toLowerCase())
-            );
-          }
-          data.forEach((user) => {
-            const row = userTableBody.insertRow();
-            row.innerHTML = `
-                <td data-key="Fullname">${user.fullname}</td>
-                <td data-key="Email">${user.email}</td>
-                <td data-key="Role">${user.role}</td>
-                <td data-key="LastLogin">${user.lastLogin}</td>
-                <td>
-                  <button type="button" class="btn btn-outline-secondary edit-user-btn" data-userid="${user._id}">✏️</button>
-                </td>
-                <td>
-                  <button type="button" class="btn btn-outline-danger delete-user-btn" data-userid="${user._id}">🗑️</button>
-                </td>
-              `;
-          });
-        } else {
-          notUser.innerText = "Kullanıcı Bulunamadı";
+const getAllUsers = async (searchValue = "") => {
+  try {
+    let currentUser = await getCurrentUser();
+    let response = await fetch("/get-all-users");
+    let data = await response.json();
+
+    const userCountDiv = document.querySelector("#userCount");
+    let countUser = data.length > 0 ? data.length : 0;
+    userCountDiv.innerHTML = `Total ${countUser - 1} Rows`;
+
+    const notUser = document.querySelector("#notUsers");
+    allUsersData = data;
+    const userTableBody = document.querySelector("#userTable tbody");
+    // Tabloyu temizle
+    userTableBody.innerHTML = "";
+    if (data.length > 0) {
+      notUser.innerText = "";
+      // Eğer bir searchValue varsa, filtreleme yap
+      if (searchValue.length > 0) {
+        data = data.filter(
+          (user) =>
+            user.fullname.toLowerCase().includes(searchValue.toLowerCase()) ||
+            user.email.toLowerCase().includes(searchValue.toLowerCase()) ||
+            user.role.toLowerCase().includes(searchValue.toLowerCase())
+        );
+      }
+
+      data.forEach((user) => {
+        if (user._id !== currentUser._id) {
+          const row = userTableBody.insertRow();
+          row.innerHTML = `
+            <td data-key="Fullname">${user.fullname}</td>
+            <td data-key="Email">${user.email}</td>
+            <td data-key="Role">${user.role}</td>
+            <td data-key="LastLogin">${formatAndDisplayDate(
+              user.lastLogin
+            )}</td>
+            <td>
+              <button type="button" class="btn btn-outline-secondary edit-user-btn" data-userid="${
+                user._id
+              }">✏️</button>
+            </td>
+            <td>
+              <button type="button" class="btn btn-outline-danger delete-user-btn" data-userid="${
+                user._id
+              }">🗑️</button>
+            </td>
+          `;
         }
-      })
-      .catch((error) => {
-        console.log(error);
       });
+    } else {
+      notUser.innerText = "Kullanıcı Bulunamadı";
+    }
   } catch (error) {
     console.log(error);
   }
@@ -74,9 +87,7 @@ searchUserInput.addEventListener("input", function () {
 // Her bir edit butonuna tıklanınca fillEditModal fonksiyonunu çağır
 document.addEventListener("click", function (event) {
   if (event.target.classList.contains("edit-user-btn")) {
-    console.log("Edit butonuna tıklandı...", event);
     const userId = event.target.getAttribute("data-userid");
-    console.log("User id yi aldık", userId);
     fillEditUserModal(userId);
   }
 });
@@ -105,9 +116,9 @@ function formatAndDisplayDate(isoDateString) {
 }
 
 // Edit butonlarına tıklanınca modalı dolduran fonksiyon
-function fillEditUserModal(userId) {
+const fillEditUserModal = async (userId) => {
+  let currentUser = await getCurrentUser();
   const user = allUsersData.find((item) => item._id === userId);
-  console.log(user);
 
   if (user) {
     // Modal içindeki alanlara verileri yerleştir
@@ -120,8 +131,23 @@ function fillEditUserModal(userId) {
 
     userFullname.innerHTML = user.fullname;
     userEmail.innerHTML = user.email;
-    userRole.innerHTML = user.role;
 
+    if (user.role === "admin") {
+      userRole.innerHTML = user.role;
+    } else if (currentUser.role === "admin" && user.role !== "admin") {
+      userRole.innerHTML = `<select class="form-select" id="roleSelect" data-user-id="${userId}" aria-label="Select User Role">
+      <option value="${user.role}" selected disabled>${user.role}</option>
+      <option value="admin">Admin</option>
+      <option value="mod">Mod</option>
+      <option value="user">User</option>
+    </select>`;
+    } else if (currentUser.role === "mod" && user.role !== "admin") {
+      userRole.innerHTML = `<select class="form-select" id="roleSelect" data-user-id="${userId}" aria-label="Select User Role">
+      <option value="${user.role}" selected disabled>${user.role}</option>
+      <option value="mod">Mod</option>
+      <option value="user">User</option>
+    </select>`;
+    }
     userVerify.innerHTML = user.isVerified ? "Doğrulandı" : "Doğrulanmadı";
     if (!user.lastLogin) {
       userLastLogin.innerHTML = "Bilinmiyor";
@@ -138,18 +164,45 @@ function fillEditUserModal(userId) {
       document.getElementById("editUserModal")
     );
     editUserModal.show();
+    // roleSelect elementini seç
+    const roleSelect = document.getElementById("roleSelect");
+
+    if (roleSelect) {
+      // roleSelect elementinin değişiklik olayına olay dinleyici ekle
+      roleSelect.addEventListener("change", async (event) => {
+        // Seçilen değeri al
+        const selectedRole = event.target.value;
+        const selectedUserId = event.target.getAttribute("data-user-id");
+
+        // Seçilen değeri işle, örneğin bir API'ye gönder veya başka bir işlem yap
+        const response = await fetch(`/change-role/${selectedUserId}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ newRole: selectedRole }),
+        });
+        const data = await response.json();
+        if (data.success) {
+          toastCreate("Role Changed", "success", data.message);
+          getAllUsers();
+        } else {
+          toastCreate("Role Changed", "danger", data.message);
+        }
+      });
+    }
 
     // Delete butonuna tıklanınca deleteLinkModal fonksiyonunu çağır
-    const deleteButton = document.querySelector("#editModalDeleteUser");
-    deleteButton.addEventListener("click", () => {
+    const deleteUserButton = document.querySelector("#editModalDeleteUser");
+    deleteUserButton.addEventListener("click", () => {
       deleteUserModal(user._id);
     });
   }
-}
+};
 
 function deleteUserModal(userId) {
   function deleteUser(userId) {
-    fetch(`/${userId}`, { method: "DELETE" })
+    fetch(`/delete-user/${userId}`, { method: "DELETE" })
       .then((response) => response.json())
       .then((data) => {
         getAllUsers();
@@ -161,8 +214,8 @@ function deleteUserModal(userId) {
     document.getElementById("deleteUserModal")
   );
   deleteUserModal.show();
-  const confirmButton = document.querySelector("#confirmDeleteUser");
-  confirmButton.addEventListener("click", () => {
+  const confirmUserButton = document.querySelector("#confirmDeleteUser");
+  confirmUserButton.addEventListener("click", () => {
     deleteUser(userId);
   });
 }

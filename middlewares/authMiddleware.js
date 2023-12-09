@@ -15,27 +15,18 @@ exports.afterLoginCheckVerify = async (req, res, next) => {
   }
 };
 
-exports.checkVerifyEmail = async (req, res, next) => {
-  try {
-    const user = await User.findById(req.user.id);
-    if (user && user.isVerified) {
-      return res.redirect("/login");
-    }
-    next();
-  } catch (error) {
-    if (error) {
-      const email = req.query.email;
-      try {
-        const user = await User.findOne({ email });
-        if (user && user.isVerified) {
-          return res.redirect("/login");
-        } else {
-          next();
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    }
-    console.error("Doğrulama kontrolü hatası:", error);
-  }
-};
+// exports.checkVerifyEmail = async (req, res, next) => {
+//   try {
+//     const { email, key } = req.query;
+//     if (!email || !key) {
+//       if (req.user) {
+//         return res.redirect("/dashboard");
+//       } else {
+//         return res.redirect("/login");
+//       }
+//     }
+//     next();
+//   } catch (error) {
+//     console.error("Doğrulama kontrolü hatası:", error);
+//   }
+// };

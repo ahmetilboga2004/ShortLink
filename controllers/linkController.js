@@ -6,6 +6,22 @@ const validator = require("validator");
 const Link = require("../models/Link");
 const User = require("../models/User");
 
+exports.getCurrentUser = (req, res) => {
+  try {
+    const currentSession = req.user;
+    if (currentSession) {
+      return res.json({ user: currentSession });
+    } else {
+      return res.json({
+        success: false,
+        message: "Kullanıcı bulunamadı.",
+      });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 const getOriginalLink = async (shortLink) => {
   try {
     const link = await Link.findOne({ shortLink });
@@ -229,6 +245,55 @@ exports.deleteLink = async (req, res) => {
   } catch (error) {
     return res.json({
       status: false,
+      message: error.message,
+    });
+  }
+};
+
+exports.deleteUser = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const deletedUser = await User.findByIdAndDelete(userId);
+    if (deletedUser) {
+      return res.json({
+        status: true,
+        message: "User successfully deleted.",
+      });
+    } else {
+      return res.json({
+        status: false,
+        message: "User not found.",
+      });
+    }
+  } catch (error) {
+    return res.json({
+      status: false,
+      message: error.message,
+    });
+  }
+};
+
+exports.changeRoleUser = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const newRole = req.body.newRole;
+    const changeRoleUser = await User.findByIdAndUpdate(userId, {
+      role: newRole,
+    }).exec();
+    if (changeRoleUser) {
+      res.json({
+        success: true,
+        message: "Kullanıcı rolü başarılı bir şekilde değiştirildi",
+      });
+    } else {
+      res.json({
+        success: false,
+        message: "Kullanıcı rolü değiştirilirken bir hata oluştu!",
+      });
+    }
+  } catch (error) {
+    res.json({
+      success: false,
       message: error.message,
     });
   }

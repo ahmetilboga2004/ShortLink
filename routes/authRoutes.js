@@ -12,11 +12,7 @@ router.post("/register", authController.registerUser);
 // Kullanıcı girişi işlemi
 router.post("/login", authController.loginUser);
 
-router.get(
-  "/verify",
-  connectEnsureLogin.ensureLoggedIn("/login"),
-  authController.verify
-);
+router.get("/verify", authController.verify);
 
 router.get(
   "/logout",

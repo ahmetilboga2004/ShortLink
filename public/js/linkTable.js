@@ -12,7 +12,7 @@ const toastCreate = (header, success, message) => {
   document.body.appendChild(toastContainer);
   var toast = document.createElement("div");
   toast.className = "toast";
-  toast.classList.add(`bg-body-${success}`);
+  toast.classList.add(`bg-${success}`, "text-dark");
   toast.innerHTML = `
       <div class="toast-header">
         <div class="me-auto">${header}</div>
@@ -168,8 +168,8 @@ function fillEditLinkModal(linkId) {
     editLinkModal.show();
 
     // Delete butonuna tıklanınca deleteLinkModal fonksiyonunu çağır
-    const deleteButton = document.querySelector("#editModalDeleteLink");
-    deleteButton.addEventListener("click", () => {
+    const deleteLinkButton = document.querySelector("#editModalDeleteLink");
+    deleteLinkButton.addEventListener("click", () => {
       deleteLinkModal(link._id);
     });
   }
@@ -177,7 +177,7 @@ function fillEditLinkModal(linkId) {
 
 function deleteLinkModal(linkId) {
   function deleteLink(linkId) {
-    fetch(`/${linkId}`, { method: "DELETE" })
+    fetch(`/delete-link/${linkId}`, { method: "DELETE" })
       .then((response) => response.json())
       .then((data) => {
         getAllLinks();
@@ -189,8 +189,8 @@ function deleteLinkModal(linkId) {
     document.getElementById("deleteLinkModal")
   );
   deleteLinkModal.show();
-  const confirmButton = document.querySelector("#confirmDeleteLink");
-  confirmButton.addEventListener("click", () => {
+  const confirmLinkButton = document.querySelector("#confirmDeleteLink");
+  confirmLinkButton.addEventListener("click", () => {
     deleteLink(linkId);
   });
 }

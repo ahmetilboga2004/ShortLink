@@ -30,9 +30,11 @@
       },
       errorCallback: (data) => {
         // Hata mesajlarını göster
-        data.errors.forEach((error) => {
-          toastCreate("Registration failed", "warning", error);
-        });
+        if (data.errors) {
+          data.errors.forEach((error) => {
+            toastCreate("Registration failed", "warning", error);
+          });
+        }
       },
     },
     shortLinkForm: {
@@ -107,7 +109,7 @@
       })
       .catch((error) => {
         console.error("Error sending data to server:", error);
-        formBehavior.errorCallback(data);
+        formBehavior.errorCallback(error.message);
         // İşlem tamamlandıktan sonra bayrağı sıfırla
         isSubmitPending = false;
       });

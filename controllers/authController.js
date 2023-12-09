@@ -129,11 +129,15 @@ exports.loginUser = (req, res, next) => {
       });
     }
     // Giriş başarılı, oturumu başlat
-    req.logIn(user, (err) => {
+    req.logIn(user, async (err) => {
       if (err) {
         console.error(err);
       }
       // Oturumu başlattıktan sonra istediğiniz işlemleri yapabilirsiniz
+      //  Burada latLogin bilgisi güncellenecek.
+      user.lastLogin = new Date();
+      await user.save(); // lastLogin alanını güncelleyin
+
       return res.json({
         success: true,
         message: "Giriş başarılı. Kontrol paneline yönlendiriliyorsunuz...",
@@ -145,32 +149,42 @@ exports.loginUser = (req, res, next) => {
 exports.verify = async (req, res) => {
   try {
     const { email, key } = req.query;
-    if (!email || !key) {
-      const user = await User.findOne({ _id: req.user.id });
-      if (user.isVerified) {
-        return res.redirect("/dashboard");
+    if (email || key) {
+      const user = await User.findOne({ email, verificationKey: key });
+      if (user) {
+        // Kullanıcıyı doğrula
+        user.isVerified = true;
+        user.verificationKey = "";
+        await user.save();
+        res.render("verify", {
+          success: true,
+          message: "Hesabınız başarıyla doğrulandı.",
+        });
+      } else if (req.user) {
+        const user = await User.findById(req.user.id);
+        if (user.isVerified) {
+          res.redirect("/dashboard");
+        }
       } else {
-        return res.render("verify", {
-          is_header: false,
-          message: "Lütfen hesabınızı doğrulayın!",
+        res.render("verify", {
+          success: false,
+          message: "Geçersiz bağlantı",
         });
       }
-    }
-
-    const user = await User.findOne({ email, verificationKey: key });
-    if (user) {
-      // Kullanıcıyı doğrula
-      user.isVerified = true;
-      user.verificationKey = "";
-      await user.save();
-
-      return res.redirect("/dashboard");
     } else {
-      return res.render("verify", {
-        is_header: false,
-        message:
-          "Bağlantı süresi bitmiş yada geçersiz bir doğrulama bağlantısı..",
-      });
+      if (req.user) {
+        const user = await User.findById(req.user.id);
+        if (user.isVerified) {
+          res.redirect("/dashboard");
+        } else {
+          res.render("verify", {
+            success: false,
+            message: "Lütfen hesabınızı doğrulayın",
+          });
+        }
+      } else {
+        res.redirect("/login");
+      }
     }
   } catch (error) {
     return res.status(500).json({
