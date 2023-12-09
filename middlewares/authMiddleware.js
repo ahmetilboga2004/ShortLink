@@ -14,19 +14,3 @@ exports.afterLoginCheckVerify = async (req, res, next) => {
     console.error("Doğrulama kontrolü hatası:", error);
   }
 };
-
-// exports.checkVerifyEmail = async (req, res, next) => {
-//   try {
-//     const { email, key } = req.query;
-//     if (!email || !key) {
-//       if (req.user) {
-//         return res.redirect("/dashboard");
-//       } else {
-//         return res.redirect("/login");
-//       }
-//     }
-//     next();
-//   } catch (error) {
-//     console.error("Doğrulama kontrolü hatası:", error);
-//   }
-// };
