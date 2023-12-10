@@ -31,8 +31,27 @@
       errorCallback: (data) => {
         // Hata mesajlarını göster
         if (data.errors) {
-          data.errors.forEach((error) => {
-            toastCreate("Registration failed", "warning", error);
+          Object.keys(data.errors).forEach((errorKey) => {
+            const errorMessage = data.errors[errorKey];
+            toastCreate("Registration Failed", "warning", errorMessage);
+          });
+        }
+      },
+    },
+    contactForm: {
+      endpoint: "/contact-form",
+      successCallback: (data) => {
+        console.log("Mesaj başarıyla gönderildi");
+        toastCreate("Message Successful", "success", data.message);
+      },
+      errorCallback: (data) => {
+        console.log(data);
+        console.log(data.errors);
+        // Hata mesajlarını göster
+        if (data.errors) {
+          Object.keys(data.errors).forEach((errorKey) => {
+            const errorMessage = data.errors[errorKey];
+            toastCreate("Message Failed", "warning", errorMessage);
           });
         }
       },
@@ -118,18 +137,13 @@
   // Toast oluşturma fonksiyonu
   const toastCreate = (header, success, message) => {
     // Toast oluştur
-    var toastContainer = document.createElement("div");
-    toastContainer.classList.add(
-      "toast-container",
-      "position-fixed",
-      "bottom-0",
-      "end-0",
-      "p-3"
-    );
-    document.body.appendChild(toastContainer);
+    var toastContainer = document.querySelector("#myToast");
     var toast = document.createElement("div");
     toast.className = "toast";
     toast.classList.add(`bg-${success}`, "text-dark");
+    toast.setAttribute("role", "alert");
+    toast.setAttribute("aria-live", "assertive");
+    toast.setAttribute("aria-atomic", "true");
     toast.innerHTML = `
       <div class="toast-header">
         <div class="me-auto">${header}</div>

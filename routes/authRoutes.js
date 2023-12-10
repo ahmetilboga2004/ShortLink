@@ -9,6 +9,7 @@ const authMiddleware = require("../middlewares/authMiddleware");
 const router = express.Router();
 
 router.post("/register", authController.registerUser);
+router.post("/contact-form", authController.contactform);
 // Kullanıcı girişi işlemi
 router.post("/login", authController.loginUser);
 

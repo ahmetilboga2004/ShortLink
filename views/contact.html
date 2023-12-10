@@ -23,7 +23,7 @@
                 <!-- Name Input -->
                 <div class="mb-3">
                     <label class="mb-2 text-muted" for="fullname">Name Surname</label>
-                    <input class="form-control" id="fullname" type="text" placeholder="Name Surname" required="required">
+                    <input class="form-control" id="fullname" name="nameSurname" type="text" placeholder="Name Surname" required="required">
                     <div class="invalid-feedback">Name Surname is required.</div>
                 </div>
 
@@ -37,7 +37,7 @@
                 <!-- Message Input -->
                 <div class="mb-3">
                     <label class="mb-2 text-muted" for="message">Message</label>
-                    <textarea class="form-control" id="message" type="text" placeholder="Message" style="height: 10rem;" required="required"></textarea>
+                    <textarea class="form-control" id="message" name="message" type="text" placeholder="Message" style="height: 10rem;" required="required"></textarea>
                     <div class="invalid-feedback">Message is required.</div>
                 </div>
 
@@ -48,4 +48,7 @@
             </form>
         </div>
     </div>
+{% endblock %}
+{% block script_files %}
+    <script src="js/auth.js"></script>
 {% endblock %}

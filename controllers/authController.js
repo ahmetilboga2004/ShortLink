@@ -8,7 +8,7 @@ const validator = require("validator");
 const User = require("../models/User");
 const passwordUtils = require("../lib/passwordUtils");
 
-// E-posta gönderen işlev
+// Doğrulama için E-posta gönderen işlev
 async function sendVerificationEmail(email, verificationKey) {
   // E-posta gönderme işlemleri için nodemailer veya başka bir e-posta gönderme modülü kullanılabilir
   // Bu örnekte, nodemailer kullanılıyor
@@ -28,23 +28,21 @@ async function sendVerificationEmail(email, verificationKey) {
     subject: "Verify Account", // Subject line
     html: `<strong><a href='http://localhost:3000/verify?email=${email}&key=${verificationKey}'>Verify Account Link</a><strong>`, // html body
   };
-
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      res.json({
-        success: false,
-        message: "Mail gönderilemedi",
-      });
+  try {
+    const info = await transporter.sendMail(mailOptions);
+    if (info) {
+      console.log(info);
+      return true;
     } else {
-      res.json({
-        success: true,
-        message: "Mail başarıyla gönderildi.",
-      });
+      return false;
     }
-  });
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
 }
 
-exports.registerUser = async (req, res, next) => {
+exports.registerUser = async (req, res) => {
   try {
     const { fullname, email, password } = req.body;
     const errors = {};
@@ -77,7 +75,12 @@ exports.registerUser = async (req, res, next) => {
     }
 
     if (!validator.isEmail(email)) {
-      errors.email = "Lütfen geçerli bir email adresi girin!";
+      errors.email = "Lütfen geçerli bir eposta adresi girin!";
+    }
+    const validEmail = await User.findOne({ email: email });
+    console.log(validEmail);
+    if (validEmail) {
+      errors.email = "Bu E-posta hesabı zaten kullanılmış!";
     }
 
     if (!validator.isLength(password, { min: 6 })) {
@@ -101,21 +104,121 @@ exports.registerUser = async (req, res, next) => {
 
     try {
       const savedUser = await newUser.save();
-      await sendVerificationEmail(email, verificationKey);
-      if (savedUser) {
+      const verifyMail = await sendVerificationEmail(email, verificationKey);
+      console.log(verifyMail);
+      if (verifyMail) {
         res.json({
           success: true,
-          message: "Mail başarılı bir şekilde gönderildi.",
+          message: "Doğrulama E-postası başarıyla gönderilmiştir.",
+        });
+      } else {
+        res.json({
+          success: false,
+          message: "Doğrulama E-postası gönderilemedi!",
         });
       }
     } catch (error) {
       res.json({
         success: false,
-        message: "Mail gönderme işlemi başarısız oldu.",
+        message: "Doğrulama E-postası gönderme işlemi başarısız oldu.",
       });
     }
   } catch (error) {
     return res.json({ success: false, message: error.message });
+  }
+};
+
+// Contact için E-posta gönderen işlev
+async function sendContactMail(nameSurname, email, message) {
+  // E-posta gönderme işlemleri için nodemailer veya başka bir e-posta gönderme modülü kullanılabilir
+  // Bu örnekte, nodemailer kullanılıyor
+  const transporter = await nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    port: 465,
+    auth: {
+      // TODO: replace `user` and `pass` values from <https://forwardemail.net>
+      user: process.env.MAIL_ACCOUNT,
+      pass: process.env.MAIL_PASSWORD,
+    },
+  });
+
+  const mailOptions = {
+    from: "ilbogaahmet4747@gmail.com",
+    to: email,
+    subject: "Contact Mail",
+    text: message,
+  };
+
+  try {
+    const info = await transporter.sendMail(mailOptions);
+    if (info) {
+      console.log(info);
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+}
+
+exports.contactform = async (req, res) => {
+  try {
+    const { nameSurname, email, message } = req.body;
+    const errors = {};
+    const validateName = (nameSurname) => {
+      const nameParts = nameSurname.split(" ");
+
+      if (nameParts.length !== 2) {
+        return false;
+      }
+
+      const [firstName, lastName] = nameParts;
+
+      if (
+        !validator.isAlpha(firstName, "tr-TR") ||
+        !validator.isAlpha(lastName, "tr-TR")
+      ) {
+        return false;
+      }
+
+      return true;
+    };
+
+    if (!validateName(nameSurname)) {
+      errors.nameSurname = "Lütfen isminizi kontrol edin!";
+    }
+
+    if (!validator.isEmail(email)) {
+      errors.email = "Lütfen geçerli bir email adresi girin!";
+    }
+    if (!validator.isLength(message, { min: 30 })) {
+      errors.message = "Mesajınız en az 30 karakter olmalıdır";
+    }
+
+    if (Object.keys(errors).length > 0) {
+      return res.json({ errors });
+    }
+
+    const sendMessage = await sendContactMail(nameSurname, email, message);
+    console.log(sendMessage);
+    if (sendMessage) {
+      res.json({
+        success: true,
+        message: "Mesajınız başarıyla gönderilmiştir.",
+      });
+    } else {
+      res.json({
+        success: false,
+        message: "Mesajınız gönderilemedi!",
+      });
+    }
+  } catch (error) {
+    res.json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 

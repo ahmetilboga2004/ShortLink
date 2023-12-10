@@ -11,78 +11,71 @@ const getCurrentUser = async () => {
   }
 };
 
-const getAllUsers = async (searchValue = "") => {
+const getAllUsers = async () => {
   try {
     let currentUser = await getCurrentUser();
     let response = await fetch("/get-all-users");
     let data = await response.json();
 
-    const userCountDiv = document.querySelector("#userCount");
-    let countUser = data.length > 0 ? data.length : 0;
-    userCountDiv.innerHTML = `Total ${countUser - 1} Rows`;
-
-    const notUser = document.querySelector("#notUsers");
     allUsersData = data;
     const userTableBody = document.querySelector("#userTable tbody");
     // Tabloyu temizle
     userTableBody.innerHTML = "";
     if (data.length > 0) {
-      notUser.innerText = "";
-      // Eğer bir searchValue varsa, filtreleme yap
-      if (searchValue.length > 0) {
-        data = data.filter(
-          (user) =>
-            user.fullname.toLowerCase().includes(searchValue.toLowerCase()) ||
-            user.email.toLowerCase().includes(searchValue.toLowerCase()) ||
-            user.role.toLowerCase().includes(searchValue.toLowerCase())
-        );
-      }
-
       data.forEach((user) => {
         if (user._id !== currentUser._id) {
           const row = userTableBody.insertRow();
+          if (!user.lastLogin) {
+            lastLoginUser = "Bilinmiyor";
+          } else {
+            lastLoginUser = formatAndDisplayDate(user.lastLogin);
+          }
           row.innerHTML = `
             <td data-key="Fullname">${user.fullname}</td>
             <td data-key="Email">${user.email}</td>
             <td data-key="Role">${user.role}</td>
-            <td data-key="LastLogin">${formatAndDisplayDate(
-              user.lastLogin
-            )}</td>
+            <td data-key="LastLogin">${lastLoginUser}</td>
             <td>
-              <button type="button" class="btn btn-outline-secondary edit-user-btn" data-userid="${
-                user._id
-              }">✏️</button>
+              <button type="button" class="btn btn-outline-secondary edit-user-btn" data-userid="${user._id}">✏️</button>
             </td>
             <td>
-              <button type="button" class="btn btn-outline-danger delete-user-btn" data-userid="${
-                user._id
-              }">🗑️</button>
+              <button type="button" class="btn btn-outline-danger delete-user-btn" data-userid="${user._id}">🗑️</button>
             </td>
           `;
         }
       });
-    } else {
-      notUser.innerText = "Kullanıcı Bulunamadı";
     }
+    $(document).ready(function () {
+      $("#userTable").DataTable({
+        responsive: false,
+        scrollX: true,
+        //disable sorting on last column
+        columnDefs: [{ orderable: false, targets: [4, 5] }],
+        language: {
+          //customize pagination prev and next buttons: use arrows instead of words
+          paginate: {
+            previous: '<span class="fa fa-chevron-left"></span>',
+            next: '<span class="fa fa-chevron-right"></span>',
+          },
+          //customize number of elements to be displayed
+          lengthMenu:
+            'Display <select class="form-control input-sm">' +
+            '<option value="5">5</option>' +
+            '<option value="10">10</option>' +
+            '<option value="20">20</option>' +
+            '<option value="30">30</option>' +
+            '<option value="30">30</option>' +
+            '<option value="-1">All</option>' +
+            "</select> results",
+        },
+      });
+    });
   } catch (error) {
     console.log(error);
   }
 };
 
 getAllUsers();
-
-// Yenile butonuna tıklandığında tabloyu yeniden doldur
-const refreshUserButton = document.getElementById("refreshUserButton");
-refreshUserButton.addEventListener("click", () => {
-  getAllUsers();
-});
-
-// Arama inputu değiştiğinde tabloyu güncellemek için
-const searchUserInput = document.getElementById("searchUserInput");
-searchUserInput.addEventListener("input", function () {
-  const searchValue = this.value.trim().toLowerCase();
-  getAllUsers(searchValue);
-});
 
 // Her bir edit butonuna tıklanınca fillEditModal fonksiyonunu çağır
 document.addEventListener("click", function (event) {
@@ -217,61 +210,5 @@ function deleteUserModal(userId) {
   const confirmUserButton = document.querySelector("#confirmDeleteUser");
   confirmUserButton.addEventListener("click", () => {
     deleteUser(userId);
-  });
-}
-
-const userTable = document.getElementById("userTable");
-const headersUser = userTable.querySelectorAll("th.sortable");
-let sortUserDirection = {};
-const iconUserSortUp = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-sort-up" viewBox="0 0 16 16">
-<path d="M3.5 12.5a.5.5 0 0 1-1 0V3.707L1.354 4.854a.5.5 0 1 1-.708-.708l2-1.999.007-.007a.498.498 0 0 1 .7.006l2 2a.5.5 0 1 1-.707.708L3.5 3.707zm3.5-9a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5M7.5 6a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1zm0 3a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1zm0 3a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1z"/>
-</svg>`;
-const iconUserSortDown = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-sort-down" viewBox="0 0 16 16">
-<path d="M3.5 2.5a.5.5 0 0 0-1 0v8.793l-1.146-1.147a.5.5 0 0 0-.708.708l2 1.999.007.007a.497.497 0 0 0 .7-.006l2-2a.5.5 0 0 0-.707-.708L3.5 11.293zm3.5 1a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5M7.5 6a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1zm0 3a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1zm0 3a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1z"/>
-</svg>`;
-
-for (const header of headersUser) {
-  const headerUserName = header.innerHTML;
-  header.innerHTML = headerUserName + " " + iconUserSortDown;
-  header.addEventListener("click", () => {
-    const headerUserSvg = header.querySelector("svg");
-    if (headerUserSvg.classList.contains("bi-sort-down")) {
-      header.innerHTML = headerUserName + " " + iconUserSortUp;
-    } else {
-      header.innerHTML = headerUserName + " " + iconUserSortDown;
-    }
-    const userSortKey = header.getAttribute("data-key");
-    const userRows = Array.from(userTable.querySelectorAll("tbody tr"));
-
-    if (
-      !sortUserDirection[userSortKey] ||
-      sortUserDirection[userSortKey] === "desc"
-    ) {
-      sortUserDirection[userSortKey] = "asc";
-    } else {
-      sortUserDirection[userSortKey] = "desc";
-    }
-
-    userRows.sort((a, b) => {
-      const userValueA = a.querySelector(
-        `td[data-key="${userSortKey}"]`
-      ).innerText;
-      const userValueB = b.querySelector(
-        `td[data-key="${userSortKey}"]`
-      ).innerText;
-
-      if (userValueA < userValueB) {
-        return sortUserDirection[userSortKey] === "asc" ? -1 : 1;
-      } else if (userValueA > userValueB) {
-        return sortUserDirection[userSortKey] === "asc" ? 1 : -1;
-      } else {
-        return 0;
-      }
-    });
-
-    userTable.querySelector("tbody").innerHTML = userRows.reduce(
-      (innerHTML, row) => innerHTML + row.outerHTML,
-      ""
-    );
   });
 }

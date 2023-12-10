@@ -1,18 +1,13 @@
 // Toast oluşturma fonksiyonu
 const toastCreate = (header, success, message) => {
   // Toast oluştur
-  var toastContainer = document.createElement("div");
-  toastContainer.classList.add(
-    "toast-container",
-    "position-fixed",
-    "bottom-0",
-    "end-0",
-    "p-3"
-  );
-  document.body.appendChild(toastContainer);
+  var toastContainer = document.querySelector("#myToast");
   var toast = document.createElement("div");
   toast.className = "toast";
   toast.classList.add(`bg-${success}`, "text-dark");
+  toast.setAttribute("role", "alert");
+  toast.setAttribute("aria-live", "assertive");
+  toast.setAttribute("aria-atomic", "true");
   toast.innerHTML = `
       <div class="toast-header">
         <div class="me-auto">${header}</div>
@@ -29,60 +24,59 @@ const toastCreate = (header, success, message) => {
 };
 let allLinksData;
 
-const getAllLinks = (searchValue = "") => {
+const getAllLinks = async () => {
   try {
-    fetch("/get-user-links")
-      .then((response) => {
-        return response.json();
-      })
-      .then((data) => {
-        const linkCountDiv = document.querySelector("#linkCount");
-        let countLink = data.length > 0 ? data.length : 0;
-        linkCountDiv.innerHTML = `Total ${countLink} Rows`;
-
-        const notLink = document.querySelector("#notLinks");
-        allLinksData = data;
-        const linkTableBody = document.querySelector("#linkTable tbody");
-        // Tabloyu temizle
-        linkTableBody.innerHTML = "";
-        if (data.length > 0) {
-          notLink.innerText = "";
-          // Eğer bir searchValue varsa, filtreleme yap
-          if (searchValue.length > 0) {
-            data = data.filter(
-              (link) =>
-                link.name.toLowerCase().includes(searchValue.toLowerCase()) ||
-                link.originalUrl
-                  .toLowerCase()
-                  .includes(searchValue.toLowerCase()) ||
-                link.shortLink.toLowerCase().includes(searchValue.toLowerCase())
-            );
-          }
-          data.forEach((link) => {
-            const row = linkTableBody.insertRow();
-            row.innerHTML = `
-              <td data-key="Name">${link.name}</td>
-              <td data-key="Url">${link.originalUrl}</td>
-              <td data-key="ShortLink">http://localhost:3000/${link.shortLink}</td>
-              <td data-key="View">${link.click}</td>
-              <td>
-                <button type="button" class="btn btn-outline-secondary edit-link-btn" data-linkid="${link._id}">✏️</button>
-              </td>
-              <td>
-                <button type="button" class="btn btn-outline-success copy-link-btn" onclick="copyToClipboard(this.closest('tr').cells[2].innerText)" data-link="${link.shortLink}">📋</button>
-              </td>
-              <td>
-                <button type="button" class="btn btn-outline-danger delete-link-btn" data-linkid="${link._id}">🗑️</button>
-              </td>
-            `;
-          });
-        } else {
-          notLink.innerText = "Link Bulunamadı";
-        }
-      })
-      .catch((error) => {
-        console.log(error);
+    let response = await fetch("/get-user-links");
+    let data = await response.json();
+    allLinksData = data;
+    const linkTableBody = document.querySelector("#linkTable tbody");
+    // Tabloyu temizle
+    linkTableBody.innerHTML = "";
+    if (data.length > 0) {
+      data.forEach((link) => {
+        const row = linkTableBody.insertRow();
+        row.innerHTML = `
+            <td data-key="Name">${link.name}</td>
+            <td data-key="Url">${link.originalUrl}</td>
+            <td data-key="ShortLink">http://localhost:3000/${link.shortLink}</td>
+            <td data-key="View">${link.click}</td>
+            <td>
+              <button type="button" class="btn btn-outline-secondary edit-link-btn" data-linkid="${link._id}">✏️</button>
+            </td>
+            <td>
+              <button type="button" class="btn btn-outline-success copy-link-btn" onclick="copyToClipboard(this.closest('tr').cells[2].innerText)" data-link="${link.shortLink}">📋</button>
+            </td>
+            <td>
+              <button type="button" class="btn btn-outline-danger delete-link-btn" data-linkid="${link._id}">🗑️</button>
+            </td>
+          `;
       });
+    }
+    $(document).ready(function () {
+      $("#linkTable").DataTable({
+        responsive: false,
+        scrollX: true,
+        //disable sorting on last column
+        columnDefs: [{ orderable: false, targets: [4, 5, 6] }],
+        language: {
+          //customize pagination prev and next buttons: use arrows instead of words
+          paginate: {
+            previous: '<span class="fa fa-chevron-left"></span>',
+            next: '<span class="fa fa-chevron-right"></span>',
+          },
+          //customize number of elements to be displayed
+          lengthMenu:
+            'Display <select class="form-control input-sm">' +
+            '<option value="5">5</option>' +
+            '<option value="10">10</option>' +
+            '<option value="20">20</option>' +
+            '<option value="30">30</option>' +
+            '<option value="30">30</option>' +
+            '<option value="-1">All</option>' +
+            "</select> results",
+        },
+      });
+    });
   } catch (error) {
     console.log(error);
   }
@@ -90,19 +84,6 @@ const getAllLinks = (searchValue = "") => {
 
 // Sayfa yüklendiğinde verileri çekip tabloya göstermek için
 getAllLinks();
-
-// Yenile butonuna tıklandığında tabloyu yeniden doldur
-const refreshLinkButton = document.getElementById("refreshLinkButton");
-refreshLinkButton.addEventListener("click", () => {
-  getAllLinks();
-});
-
-// Arama inputu değiştiğinde tabloyu güncellemek için
-const searchLinkInput = document.getElementById("searchLinkInput");
-searchLinkInput.addEventListener("input", function () {
-  const searchValue = this.value.trim().toLowerCase();
-  getAllLinks(searchValue);
-});
 
 // Her bir edit butonuna tıklanınca fillEditModal fonksiyonunu çağır
 document.addEventListener("click", function (event) {
@@ -192,55 +173,6 @@ function deleteLinkModal(linkId) {
   const confirmLinkButton = document.querySelector("#confirmDeleteLink");
   confirmLinkButton.addEventListener("click", () => {
     deleteLink(linkId);
-  });
-}
-
-const linkTable = document.getElementById("linkTable");
-const headers = linkTable.querySelectorAll("th.sortable");
-let sortDirection = {};
-const iconSortUp = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-sort-up" viewBox="0 0 16 16">
-<path d="M3.5 12.5a.5.5 0 0 1-1 0V3.707L1.354 4.854a.5.5 0 1 1-.708-.708l2-1.999.007-.007a.498.498 0 0 1 .7.006l2 2a.5.5 0 1 1-.707.708L3.5 3.707zm3.5-9a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5M7.5 6a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1zm0 3a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1zm0 3a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1z"/>
-</svg>`;
-const iconSortDown = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-sort-down" viewBox="0 0 16 16">
-<path d="M3.5 2.5a.5.5 0 0 0-1 0v8.793l-1.146-1.147a.5.5 0 0 0-.708.708l2 1.999.007.007a.497.497 0 0 0 .7-.006l2-2a.5.5 0 0 0-.707-.708L3.5 11.293zm3.5 1a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5M7.5 6a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1zm0 3a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1zm0 3a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1z"/>
-</svg>`;
-
-for (const header of headers) {
-  const headerName = header.innerHTML;
-  header.innerHTML = headerName + " " + iconSortDown;
-  header.addEventListener("click", () => {
-    const headerLinkSvg = header.querySelector("svg");
-    if (headerLinkSvg.classList.contains("bi-sort-down")) {
-      header.innerHTML = headerName + " " + iconSortUp;
-    } else {
-      header.innerHTML = headerName + " " + iconSortDown;
-    }
-    const sortKey = header.getAttribute("data-key");
-    const rows = Array.from(linkTable.querySelectorAll("tbody tr"));
-
-    if (!sortDirection[sortKey] || sortDirection[sortKey] === "desc") {
-      sortDirection[sortKey] = "asc";
-    } else {
-      sortDirection[sortKey] = "desc";
-    }
-
-    rows.sort((a, b) => {
-      const aValue = a.querySelector(`td[data-key="${sortKey}"]`).innerText;
-      const bValue = b.querySelector(`td[data-key="${sortKey}"]`).innerText;
-
-      if (aValue < bValue) {
-        return sortDirection[sortKey] === "asc" ? -1 : 1;
-      } else if (aValue > bValue) {
-        return sortDirection[sortKey] === "asc" ? 1 : -1;
-      } else {
-        return 0;
-      }
-    });
-
-    linkTable.querySelector("tbody").innerHTML = rows.reduce(
-      (innerHTML, row) => innerHTML + row.outerHTML,
-      ""
-    );
   });
 }
 
