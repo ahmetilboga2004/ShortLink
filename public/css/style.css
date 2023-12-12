@@ -57,6 +57,10 @@ main {
     cursor: pointer;
 }
 
+.show-image {
+    display: none;
+}
+
 
 @media (max-width: 768px) {
 
@@ -70,5 +74,13 @@ main {
 
     .card .col-md-8 {
         order: 2;
+    }
+
+    .hide-image {
+        display: none;
+    }
+
+    .show-image {
+        display: block;
     }
 }

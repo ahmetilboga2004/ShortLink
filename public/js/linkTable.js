@@ -29,57 +29,92 @@ const getAllLinks = async () => {
     let response = await fetch("/get-user-links");
     let data = await response.json();
     allLinksData = data;
-    const linkTableBody = document.querySelector("#linkTable tbody");
-    // Tabloyu temizle
-    linkTableBody.innerHTML = "";
-    if (data.length > 0) {
-      data.forEach((link) => {
-        const row = linkTableBody.insertRow();
-        row.innerHTML = `
-            <td data-key="Name">${link.name}</td>
-            <td data-key="Url">${link.originalUrl}</td>
-            <td data-key="ShortLink">http://localhost:3000/${link.shortLink}</td>
-            <td data-key="View">${link.click}</td>
-            <td>
-              <button type="button" class="btn btn-outline-secondary edit-link-btn" data-linkid="${link._id}">✏️</button>
-            </td>
-            <td>
-              <button type="button" class="btn btn-outline-success copy-link-btn" onclick="copyToClipboard(this.closest('tr').cells[2].innerText)" data-link="${link.shortLink}">📋</button>
-            </td>
-            <td>
-              <button type="button" class="btn btn-outline-danger delete-link-btn" data-linkid="${link._id}">🗑️</button>
-            </td>
-          `;
-      });
+
+    // DataTables'in başlatılmış olup olmadığını kontrol et
+    if ($.fn.dataTable.isDataTable("#linkTable")) {
+      // DataTables zaten başlatılmışsa, tabloyu güncelle
+      $("#linkTable").DataTable().clear().rows.add(allLinksData).draw();
+    } else {
+      // DataTables başlatılmamışsa, başlat
+      initializeDataTable();
     }
-    $(document).ready(function () {
-      $("#linkTable").DataTable({
-        responsive: false,
-        scrollX: true,
-        //disable sorting on last column
-        columnDefs: [{ orderable: false, targets: [4, 5, 6] }],
-        language: {
-          //customize pagination prev and next buttons: use arrows instead of words
-          paginate: {
-            previous: '<span class="fa fa-chevron-left"></span>',
-            next: '<span class="fa fa-chevron-right"></span>',
-          },
-          //customize number of elements to be displayed
-          lengthMenu:
-            'Display <select class="form-control input-sm">' +
-            '<option value="5">5</option>' +
-            '<option value="10">10</option>' +
-            '<option value="20">20</option>' +
-            '<option value="30">30</option>' +
-            '<option value="30">30</option>' +
-            '<option value="-1">All</option>' +
-            "</select> results",
-        },
-      });
-    });
   } catch (error) {
     console.log(error);
   }
+};
+
+const initializeDataTable = () => {
+  $("#linkTable").DataTable({
+    responsive: false,
+    scrollX: true,
+    columnDefs: [{ orderable: false, targets: [4, 5, 6] }],
+    language: {
+      paginate: {
+        previous: '<span class="fa fa-chevron-left"></span>',
+        next: '<span class="fa fa-chevron-right"></span>',
+      },
+      lengthMenu:
+        'Göster <select class="form-control input-sm">' +
+        '<option value="5">5</option>' +
+        '<option value="10">10</option>' +
+        '<option value="20">20</option>' +
+        '<option value="30">30</option>' +
+        '<option value="30">30</option>' +
+        '<option value="-1">Hepsi</option>' +
+        "</select>",
+    },
+    dom:
+      "<'d-flex justify-content-between'<'col-sm col-md'l><'col-sm col-md'f>>" +
+      "<'row'<'col-sm-12'tr>>" +
+      "<'d-flex justify-content-between mt-3'<'col-sm col-md'i><'col-sm col-md'p>>",
+    data: allLinksData,
+    columns: [
+      { data: "name", targets: 0 },
+      { data: "originalUrl", targets: 1 },
+      {
+        data: "shortLink",
+        targets: 2,
+        render: function (data, type, row, meta) {
+          return "http://localhost:3000/" + data;
+        },
+      },
+      { data: "click", targets: 3 },
+      {
+        data: null,
+        targets: 4,
+        render: function (data, type, row, meta) {
+          return (
+            '<button type="button" class="btn btn-outline-secondary edit-link-btn" data-linkid="' +
+            row._id +
+            '">✏️</button>'
+          );
+        },
+      },
+      {
+        data: "shortLink",
+        targets: 5,
+        render: function (data, type, row, meta) {
+          return (
+            '<button type="button" class="btn btn-outline-success copy-link-btn" onclick="copyToClipboard(this.closest(\'tr\').cells[2].innerText)" data-link="' +
+            data +
+            '">📋</button>'
+          );
+        },
+      },
+      {
+        data: null,
+        targets: 6,
+        render: function (data, type, row, meta) {
+          return (
+            '<button type="button" class="btn btn-outline-danger delete-link-btn" data-linkid="' +
+            row._id +
+            '">🗑️</button>'
+          );
+        },
+      },
+    ],
+  });
+  $("#linkTable_length select").addClass("form-control-sm");
 };
 
 // Sayfa yüklendiğinde verileri çekip tabloya göstermek için

@@ -5,6 +5,7 @@ const connectEnsureLogin = require("connect-ensure-login");
 // * MY-MODULES
 const authController = require("../controllers/authController");
 const authMiddleware = require("../middlewares/authMiddleware");
+const upload = require("../config/multerConfig");
 
 const router = express.Router();
 
@@ -12,6 +13,12 @@ router.post("/register", authController.registerUser);
 router.post("/contact-form", authController.contactform);
 // Kullanıcı girişi işlemi
 router.post("/login", authController.loginUser);
+
+router.post(
+  "/upload-profile",
+  upload.single("profileImage"),
+  authController.uploadProfile
+);
 
 router.get("/verify", authController.verify);
 

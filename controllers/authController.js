@@ -128,6 +128,29 @@ exports.registerUser = async (req, res) => {
   }
 };
 
+exports.uploadProfile = async (req, res) => {
+  const userId = req.body.userId;
+  const imagePath = req.file.path;
+
+  // Kullanıcıyı bul ve profil fotoğrafı alanını güncelle
+  const update = await User.findByIdAndUpdate(userId, {
+    profileImage: imagePath,
+  });
+
+  if (update) {
+    res.json({
+      success: true,
+      message: "Profil fotoğrafı başarıyla güncellendi",
+    });
+  } else {
+    console.error(err);
+    res.json({
+      success: false,
+      message: "Profil fotoğrafı güncellenemedi!",
+    });
+  }
+};
+
 // Contact için E-posta gönderen işlev
 async function sendContactMail(nameSurname, email, message) {
   // E-posta gönderme işlemleri için nodemailer veya başka bir e-posta gönderme modülü kullanılabilir

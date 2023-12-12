@@ -1,4 +1,5 @@
 let allUsersData;
+let lastLoginUser;
 
 const getCurrentUser = async () => {
   try {
@@ -45,37 +46,45 @@ const getAllUsers = async () => {
         }
       });
     }
-    $(document).ready(function () {
-      $("#userTable").DataTable({
-        responsive: false,
-        scrollX: true,
-        //disable sorting on last column
-        columnDefs: [{ orderable: false, targets: [4, 5] }],
-        language: {
-          //customize pagination prev and next buttons: use arrows instead of words
-          paginate: {
-            previous: '<span class="fa fa-chevron-left"></span>',
-            next: '<span class="fa fa-chevron-right"></span>',
-          },
-          //customize number of elements to be displayed
-          lengthMenu:
-            'Display <select class="form-control input-sm">' +
-            '<option value="5">5</option>' +
-            '<option value="10">10</option>' +
-            '<option value="20">20</option>' +
-            '<option value="30">30</option>' +
-            '<option value="30">30</option>' +
-            '<option value="-1">All</option>' +
-            "</select> results",
-        },
-      });
-    });
   } catch (error) {
     console.log(error);
   }
 };
 
-getAllUsers();
+const initializeUserTable = () => {
+  $("#userTable").DataTable({
+    responsive: false,
+    scrollX: true,
+    columnDefs: [{ orderable: false, targets: [4, 5] }],
+    language: {
+      paginate: {
+        previous: '<span class="fa fa-chevron-left"></span>',
+        next: '<span class="fa fa-chevron-right"></span>',
+      },
+      lengthMenu:
+        'Display <select class="form-control input-sm">' +
+        '<option value="5">5</option>' +
+        '<option value="10">10</option>' +
+        '<option value="20">20</option>' +
+        '<option value="30">30</option>' +
+        '<option value="30">30</option>' +
+        '<option value="-1">Hepsi</option>' +
+        "</select>",
+    },
+    dom:
+      "<'d-flex justify-content-between'<'col-sm col-md'l><'col-sm col-md'f>>" +
+      "<'row'<'col-sm-12'tr>>" +
+      "<'d-flex justify-content-between mt-3'<'col-sm col-md'i><'col-sm col-md'p>>",
+    drawCallback: function () {
+      getAllUsers();
+    },
+  });
+
+  $("#userTable_length select").addClass("form-control-sm");
+};
+
+// Sayfa yüklendiğinde verileri çekip tabloya göstermek için
+initializeUserTable();
 
 // Her bir edit butonuna tıklanınca fillEditModal fonksiyonunu çağır
 document.addEventListener("click", function (event) {
