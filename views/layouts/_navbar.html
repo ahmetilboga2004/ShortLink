@@ -39,8 +39,12 @@
                 </button>
                 {% if user %}
                     <div class="mx-2 btn-group">
-                        <button class="btn p-0 border-0 dropdown-toggle" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false" type="button">
-                            <img src="/images/profile.jpg" alt="Profile" class="img-fluid rounded-circle" style="max-width: 40px; max-height: 40px;">
+                        <button class="btn p-0 border-0" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false" type="button">
+                            {% if user.profileImage %}
+                                <img src="{{ user.profileImage }}" alt="Profile" class="profile-image" style="max-width: 45px; max-height: 45px;">
+                            {% else %}
+                                <img src="/images/profile.jpg" alt="Profile" class="profile-image" style="max-width: 45px; max-height: 45px;">
+                            {% endif %}
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end mt-2">
                             <li>

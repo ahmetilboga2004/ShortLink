@@ -5,13 +5,6 @@ exports.getIndexPage = (req, res) => {
   });
 };
 
-exports.getProfilePage = (req, res) => {
-  res.render("profile", {
-    is_header: false,
-    pageName: "profile",
-  });
-};
-
 exports.getAboutPage = (req, res) => {
   res.render("about", {
     is_header: true,

@@ -61,6 +61,46 @@ main {
     display: none;
 }
 
+/* ! PROFİLE PHOTO HOVER EFFECT */
+.image-container {
+    position: relative;
+    display: inline-block;
+}
+
+.hover-image {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    transition: filter 0.3s ease-in-out;
+}
+
+.btn-file {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 10px 15px;
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.image-container:hover .hover-image {
+    filter: brightness(70%);
+}
+
+.image-container:hover .btn-file {
+    opacity: 1;
+}
+
+.profile-image {
+    clip-path: circle();
+}
+
 
 @media (max-width: 768px) {
 

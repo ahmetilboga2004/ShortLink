@@ -2,6 +2,7 @@
 const express = require("express");
 const passport = require("passport");
 const nunjucks = require("nunjucks");
+const dateFilter = require("nunjucks-date-filter");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
@@ -26,11 +27,12 @@ dotenv.config();
 // ! TEMPLATE ENGINE
 app.engine("html", nunjucks.render);
 app.set("view engine", "html");
-nunjucks.configure("views", {
+const configNjk = nunjucks.configure("views", {
   autoescape: true,
   noCache: true,
   express: app,
 });
+configNjk.addFilter("date", dateFilter);
 
 // ! MONGO STORE
 const store = new MongoDBSession({
@@ -40,6 +42,7 @@ const store = new MongoDBSession({
 
 // ! MIDDLEWARES
 app.use(express.static("public"));
+app.use("/uploads", express.static("uploads"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());

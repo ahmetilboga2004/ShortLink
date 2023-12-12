@@ -133,18 +133,19 @@
         isSubmitPending = false;
       });
   };
+})();
 
-  // Toast oluşturma fonksiyonu
-  const toastCreate = (header, success, message) => {
-    // Toast oluştur
-    var toastContainer = document.querySelector("#myToast");
-    var toast = document.createElement("div");
-    toast.className = "toast";
-    toast.classList.add(`bg-${success}`, "text-dark");
-    toast.setAttribute("role", "alert");
-    toast.setAttribute("aria-live", "assertive");
-    toast.setAttribute("aria-atomic", "true");
-    toast.innerHTML = `
+// Toast oluşturma fonksiyonu
+const toastCreate = (header, success, message) => {
+  // Toast oluştur
+  var toastContainer = document.querySelector("#myToast");
+  var toast = document.createElement("div");
+  toast.className = "toast";
+  toast.classList.add(`bg-${success}`, "text-dark");
+  toast.setAttribute("role", "alert");
+  toast.setAttribute("aria-live", "assertive");
+  toast.setAttribute("aria-atomic", "true");
+  toast.innerHTML = `
       <div class="toast-header">
         <div class="me-auto">${header}</div>
         <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
@@ -152,10 +153,47 @@
       <div class="toast-body">
         ${message}
       </div>`;
-    toastContainer.appendChild(toast);
+  toastContainer.appendChild(toast);
 
-    // Bootstrap Toast gösterimi
-    var bootstrapToast = new bootstrap.Toast(toast);
-    bootstrapToast.show();
-  };
-})();
+  // Bootstrap Toast gösterimi
+  var bootstrapToast = new bootstrap.Toast(toast);
+  bootstrapToast.show();
+};
+
+const changeInput = document.querySelector("#fileInput");
+const profileImage = document.querySelector("#profile-photo");
+if (changeInput) {
+  changeInput.addEventListener("change", async (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const formData = new FormData();
+      formData.append("profileImage", file);
+
+      try {
+        const response = await fetch("/upload-profile", {
+          method: "POST",
+          body: formData,
+        });
+        const data = await response.json();
+        if (data.success) {
+          console.log(data);
+          console.log(data.message);
+          toastCreate("Upload successful", "success", data.message);
+          toastCreate(
+            "Upload successful",
+            "success",
+            "Değişiklikleri görmek için sayfayı yenileyin lütfen."
+          );
+          console.log(data.upload);
+          profileImage.src = data.upload;
+        } else {
+          console.log(data);
+          console.log(data.message);
+          toastCreate("Upload failed", "warning", data.message);
+        }
+      } catch (error) {
+        toastCreate("Upload failed", "warning", error.message);
+      }
+    }
+  });
+}

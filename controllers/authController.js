@@ -3,13 +3,15 @@ const passport = require("passport");
 const nodemailer = require("nodemailer");
 const crypto = require("crypto");
 const validator = require("validator");
+const path = require("path");
 
 // * MY-MODULES
 const User = require("../models/User");
 const passwordUtils = require("../lib/passwordUtils");
+const Link = require("../models/Link");
 
 // Doğrulama için E-posta gönderen işlev
-async function sendVerificationEmail(email, verificationKey) {
+const sendVerificationEmail = async (email, verificationKey) => {
   // E-posta gönderme işlemleri için nodemailer veya başka bir e-posta gönderme modülü kullanılabilir
   // Bu örnekte, nodemailer kullanılıyor
   const transporter = nodemailer.createTransport({
@@ -40,7 +42,7 @@ async function sendVerificationEmail(email, verificationKey) {
     console.error(error);
     return false;
   }
-}
+};
 
 exports.registerUser = async (req, res) => {
   try {
@@ -128,31 +130,61 @@ exports.registerUser = async (req, res) => {
   }
 };
 
-exports.uploadProfile = async (req, res) => {
-  const userId = req.body.userId;
-  const imagePath = req.file.path;
+exports.profileUser = async (req, res) => {
+  try {
+    const user = req.user;
+    const linkCount = await Link.countDocuments({ createdBy: user.id });
 
-  // Kullanıcıyı bul ve profil fotoğrafı alanını güncelle
-  const update = await User.findByIdAndUpdate(userId, {
-    profileImage: imagePath,
-  });
-
-  if (update) {
-    res.json({
-      success: true,
-      message: "Profil fotoğrafı başarıyla güncellendi",
+    res.render("profile", {
+      is_header: false,
+      pageName: "profile",
+      linkCount: linkCount,
     });
-  } else {
-    console.error(err);
+  } catch (error) {
+    res.render("profile", {
+      is_header: false,
+      pageName: "profile",
+      linkCount: linkCount,
+    });
+  }
+};
+
+exports.uploadProfile = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    console.log(userId);
+    const imagePath = req.file.path;
+    console.log(imagePath);
+
+    // Kullanıcıyı bul ve profil fotoğrafı alanını güncelle
+    const update = await User.findByIdAndUpdate(userId, {
+      profileImage: imagePath,
+    });
+
+    if (update) {
+      console.log("UPDATE: ", update);
+      res.json({
+        success: true,
+        message: "Profil fotoğrafı başarıyla güncellendi",
+        upload: update.profileImage,
+      });
+    } else {
+      console.error(update);
+      res.json({
+        success: false,
+        message: "Profil fotoğrafı güncellenemedi!",
+      });
+    }
+  } catch (error) {
     res.json({
       success: false,
-      message: "Profil fotoğrafı güncellenemedi!",
+      message: error,
     });
   }
 };
 
 // Contact için E-posta gönderen işlev
-async function sendContactMail(nameSurname, email, message) {
+const sendContactMail = async (nameSurname, email, message) => {
   // E-posta gönderme işlemleri için nodemailer veya başka bir e-posta gönderme modülü kullanılabilir
   // Bu örnekte, nodemailer kullanılıyor
   const transporter = await nodemailer.createTransport({
@@ -184,7 +216,7 @@ async function sendContactMail(nameSurname, email, message) {
     console.error(error);
     return false;
   }
-}
+};
 
 exports.contactform = async (req, res) => {
   try {
@@ -225,7 +257,6 @@ exports.contactform = async (req, res) => {
     }
 
     const sendMessage = await sendContactMail(nameSurname, email, message);
-    console.log(sendMessage);
     if (sendMessage) {
       res.json({
         success: true,

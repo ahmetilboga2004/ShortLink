@@ -20,6 +20,11 @@ router.post(
   authController.uploadProfile
 );
 
+router.get(
+  "/profile",
+  connectEnsureLogin.ensureLoggedIn("/login"),
+  authController.profileUser
+);
 router.get("/verify", authController.verify);
 
 router.get(
