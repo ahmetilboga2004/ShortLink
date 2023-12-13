@@ -4,7 +4,6 @@
   "description": "ShortLink is a simple and user-friendly link shortening service that efficiently shortens long URLs, enabling users to share links quickly and effectively.",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
