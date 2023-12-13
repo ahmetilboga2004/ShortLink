@@ -25,7 +25,7 @@ const sendVerificationEmail = async (email, verificationKey) => {
   });
 
   const mailOptions = {
-    from: "ilbogaahmet4747@gmail.com", // sender address
+    from: "fastshorterlink@gmail.com", // sender address
     to: email, // list of receivers
     subject: "Verify Account", // Subject line
     html: `<strong><a href='http://localhost:3000/verify?email=${email}&key=${verificationKey}'>Verify Account Link</a><strong>`, // html body
@@ -198,7 +198,7 @@ const sendContactMail = async (nameSurname, email, message) => {
   });
 
   const mailOptions = {
-    from: "ilbogaahmet4747@gmail.com",
+    from: "fastshorterlink@gmail.com",
     to: email,
     subject: "Contact Mail",
     text: message,
@@ -364,9 +364,10 @@ exports.resetPassword = async (req, res) => {
   try {
     const { password, password_confirm, logout_devices } = req.body;
     if (!(password === password_confirm)) {
-      return res
-        .status(400)
-        .json({ message: "Hata girdiğiniz şifreler aynı değil" });
+      return res.json({
+        success: false,
+        message: "Hata girdiğiniz şifreler aynı değil",
+      });
     }
     const saltHash = await passwordUtils.genPassword(password);
 
@@ -374,7 +375,7 @@ exports.resetPassword = async (req, res) => {
     const hash = saltHash.hash;
 
     // Güncellenmiş şifreyi veritabanında kaydet
-    await User.findByIdAndUpdate(req.user.id, { hash, salt });
+    const newPass = await User.findByIdAndUpdate(req.user.id, { hash, salt });
     if (logout_devices) {
       // Kullanıcının oturumda olduğunu kontrol et
       if (req.isAuthenticated()) {
@@ -415,15 +416,25 @@ exports.resetPassword = async (req, res) => {
           });
         });
 
-        res.redirect("/"); // veya başka bir sayfaya yönlendirme yapabilirsiniz
+        res.json({
+          success: true,
+          message:
+            "Şifreniz başarıyla değiştirildi. Anasayfaya yönlendiriliyorsunuz.",
+        }); // veya başka bir sayfaya yönlendirme yapabilirsiniz
       } else {
         res.redirect("/"); // Kullanıcı zaten oturumda değilse, ana sayfaya yönlendir
       }
     } else {
-      return res.redirect("/dashboard"); // veya başka bir sayfaya yönlendirme yapabilirsiniz
+      return res.json({
+        success: true,
+        message: "Şifreniz başarıyla güncellendi",
+      }); // veya başka bir sayfaya yönlendirme yapabilirsiniz
     }
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    res.json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 
@@ -439,7 +450,7 @@ const sendPasswordForgotEmail = async (email, resetKey) => {
   });
 
   const mailOptions = {
-    from: "ilbogaahmet4747@gmail.com", // sender address
+    from: "fastshorterlink@gmail.com", // sender address
     to: email, // list of receivers
     subject: "Reset Password", // Subject line
     html: `<strong><a href='http://localhost:3000/reset-forgot-password?email=${email}&key=${resetKey}'>Reset Password</a><strong>`, // html body
@@ -461,9 +472,10 @@ exports.forgotPassword = async (req, res) => {
     const user = await User.findOne({ email });
 
     if (!user) {
-      return res
-        .status(404)
-        .json({ message: "Bu emaile ait bir hesap bulunamadı" });
+      return res.json({
+        success: false,
+        message: "Böyle bir E-posta hesabı yok",
+      });
     }
 
     // Şifre sıfırlama anahtarı oluştur
@@ -481,14 +493,16 @@ exports.forgotPassword = async (req, res) => {
     // E-posta ile şifre sıfırlama bağlantısı gönder
     await sendPasswordForgotEmail(user.email, resetKey);
 
-    return res
-      .status(200)
-      .json({ message: "Şifre sıfırlama bağlantısı e-posta ile gönderildi." });
+    res.json({
+      success: true,
+      message: "Şifre sıfırlama bağlantısı başarılı bir şekilde gönderildi.",
+    });
   } catch (error) {
     console.error("Şifre sıfırlama hatası:", error);
-    return res
-      .status(500)
-      .json({ message: "Şifre sıfırlama işlemi sırasında bir hata oluştu." });
+    res.json({
+      success: false,
+      message: "Şifre sıfırlama bağlantısı gönderilemedi!.",
+    });
   }
 };
 
@@ -500,23 +514,30 @@ exports.resetForgot = async (req, res) => {
     const user = await User.findOne({ email, resetKey: key });
 
     if (!user) {
-      return res
-        .status(400)
-        .json({ message: "Geçersiz şifre sıfırlama bağlantısı." });
+      return res.render("resetForgotPassword", {
+        success: false,
+        message: "Geçersiz Bağlantı..",
+      });
     }
 
     // Şifre sıfırlama bağlantısının süresi geçmemişse
     if (user.resetKeyExpires > new Date()) {
       // Şifre sıfırlama sayfasını göster
-      return res.render("resetForgotPassword", { email, key });
+      res.render("resetForgotPassword", {
+        success: true,
+        email: email,
+        key: key,
+      });
     } else {
-      return res
-        .status(400)
-        .json({ message: "Şifre sıfırlama bağlantısının süresi geçmiş." });
+      res.render("resetForgotPassword", {
+        success: false,
+        message: "Şifre sıfırlama bağlantısının süresi geçmiş!",
+      });
     }
   } catch (error) {
     console.error("Şifre sıfırlama bağlantısı kontrol hatası:", error);
-    return res.status(500).json({
+    res.render("resetForgotPassword", {
+      success: false,
       message: "Şifre sıfırlama bağlantısı kontrol sırasında bir hata oluştu.",
     });
   }
@@ -529,9 +550,10 @@ exports.resetForgotPassword = async (req, res) => {
 
     // Şifre ve şifre onayı kontrolü
     if (!(password === password_confirm)) {
-      return res
-        .status(400)
-        .json({ message: "Hata: Girdiğiniz şifreler aynı değil" });
+      return res.json({
+        success: false,
+        message: "Hata: Girdiğiniz şifreler aynı değil",
+      });
     }
 
     // Kullanıcıyı e-posta ve reset anahtarı ile bul
@@ -539,9 +561,10 @@ exports.resetForgotPassword = async (req, res) => {
 
     // Kullanıcı bulunamazsa
     if (!user) {
-      return res
-        .status(400)
-        .json({ message: "Geçersiz şifre sıfırlama bağlantısı." });
+      res.json({
+        success: false,
+        message: "Geçersiz şifre sıfırlama bağlantısı.",
+      });
     }
 
     // Şifre sıfırlama bağlantısının süresi geçmemişse
@@ -597,22 +620,36 @@ exports.resetForgotPassword = async (req, res) => {
             });
           });
 
-          return res.redirect("/"); // veya başka bir sayfaya yönlendirme yapabilirsiniz
+          res.json({
+            success: true,
+            message:
+              "Şifreniz başarılı bir şekilde değiştirildi. Çıkış yapılıyor...",
+          }); // veya başka bir sayfaya yönlendirme yapabilirsiniz
         } else {
-          return res.redirect("/"); // Kullanıcı zaten oturumda değilse, ana sayfaya yönlendir
+          res.json({
+            success: true,
+            message:
+              "Şifreniz değiştirildi. Giriş sayfasına yönlendiriliyorsunuz",
+          }); // Kullanıcı zaten oturumda değilse, ana sayfaya yönlendir
         }
       } else {
-        return res.redirect("/dashboard"); // veya başka bir sayfaya yönlendirme yapabilirsiniz
+        res.json({
+          success: true,
+          message:
+            "Şifre sıfırlama işlemi başarılı. Giriş sayfasına yönlendiriliyorsunuz",
+        }); // veya başka bir sayfaya yönlendirme yapabilirsiniz
       }
     } else {
-      return res
-        .status(400)
-        .json({ message: "Şifre sıfırlama bağlantısının süresi geçmiş." });
+      res.json({
+        success: false,
+        message: "Şifre sıfırlama bağlantısının süresi geçmiş.",
+      });
     }
   } catch (error) {
     console.error("Şifre sıfırlama hatası:", error);
-    return res
-      .status(500)
-      .json({ message: "Şifre sıfırlama işlemi sırasında bir hata oluştu." });
+    res.json({
+      success: false,
+      message: "Şifre sıfırlama işlemi sırasında bir hata oluştu.",
+    });
   }
 };

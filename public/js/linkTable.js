@@ -1,27 +1,27 @@
 // Toast oluşturma fonksiyonu
-const toastCreate = (header, success, message) => {
-  // Toast oluştur
-  var toastContainer = document.querySelector("#myToast");
-  var toast = document.createElement("div");
-  toast.className = "toast";
-  toast.classList.add(`bg-${success}`, "text-dark");
-  toast.setAttribute("role", "alert");
-  toast.setAttribute("aria-live", "assertive");
-  toast.setAttribute("aria-atomic", "true");
-  toast.innerHTML = `
-      <div class="toast-header">
-        <div class="me-auto">${header}</div>
-        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-      </div>
-      <div class="toast-body">
-        ${message}
-      </div>`;
-  toastContainer.appendChild(toast);
+// const toastCreate = (header, success, message) => {
+//   // Toast oluştur
+//   var toastContainer = document.querySelector("#myToast");
+//   var toast = document.createElement("div");
+//   toast.className = "toast";
+//   toast.classList.add(`bg-${success}`, "text-dark");
+//   toast.setAttribute("role", "alert");
+//   toast.setAttribute("aria-live", "assertive");
+//   toast.setAttribute("aria-atomic", "true");
+//   toast.innerHTML = `
+//       <div class="toast-header">
+//         <div class="me-auto">${header}</div>
+//         <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+//       </div>
+//       <div class="toast-body">
+//         ${message}
+//       </div>`;
+//   toastContainer.appendChild(toast);
 
-  // Bootstrap Toast gösterimi
-  var bootstrapToast = new bootstrap.Toast(toast);
-  bootstrapToast.show();
-};
+//   // Bootstrap Toast gösterimi
+//   var bootstrapToast = new bootstrap.Toast(toast);
+//   bootstrapToast.show();
+// };
 let allLinksData;
 
 const getAllLinks = async () => {

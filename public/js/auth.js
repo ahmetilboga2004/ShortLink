@@ -2,7 +2,15 @@
   "use strict";
   // Bayrak (flag) tanımla
   let isSubmitPending = false;
+  // auth.js dosyanızın başına ekleyin
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  const email = urlParams.get("email");
+  const key = urlParams.get("key");
 
+  const url = `/reset-forgot-password?email=${encodeURIComponent(
+    email
+  )}&key=${encodeURIComponent(key)}`;
   const formBehaviors = {
     loginForm: {
       endpoint: "/login",
@@ -43,6 +51,11 @@
       successCallback: (data) => {
         console.log("Mesaj başarıyla gönderildi");
         toastCreate("Message Successful", "success", data.message);
+        var button = document.querySelector("#submitContactButton");
+        button.disabled = true;
+        setInterval(() => {
+          button.disabled = false;
+        }, 10000);
       },
       errorCallback: (data) => {
         console.log(data);
@@ -59,13 +72,54 @@
     shortLinkForm: {
       endpoint: "/short-link",
       successCallback: (data) => {
-        // Başarılı bir şekilde işlendikten sonra yapılacak işlemleri buraya ekleyin
         getAllLinks();
         toastCreate("Link Shortened", "success", data.message);
       },
       errorCallback: (data) => {
         // Hata mesajını göster
         toastCreate("Short Link Failed", "warning", data.message);
+      },
+    },
+    resetForm: {
+      endpoint: "/reset",
+      successCallback: (data) => {
+        toastCreate("Password reset", "success", data.message);
+        setInterval(() => {
+          window.location.href = "/";
+        }, 1500);
+      },
+      errorCallback: (data) => {
+        console.log(data);
+        // Hata mesajını göster
+        toastCreate("Password not reset", "warning", data.message);
+      },
+    },
+    forgotForm: {
+      endpoint: "/forgot",
+      successCallback: (data) => {
+        toastCreate("Reset link sent", "success", data.message);
+        setInterval(() => {
+          window.location.href = "/login";
+        }, 2000);
+      },
+      errorCallback: (data) => {
+        console.log(data);
+        // Hata mesajını göster
+        toastCreate("Failed to send reset link", "warning", data.message);
+      },
+    },
+    resetForgotPasswordForm: {
+      endpoint: url,
+      successCallback: (data) => {
+        toastCreate("Reset link sent", "success", data.message);
+        setInterval(() => {
+          window.location.href = "/login";
+        }, 2000);
+      },
+      errorCallback: (data) => {
+        console.log(data);
+        // Hata mesajını göster
+        toastCreate("Failed to send reset link", "warning", data.message);
       },
     },
     // Diğer formlar için benzer davranışları ekleyebilirsiniz

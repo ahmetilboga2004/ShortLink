@@ -10,24 +10,24 @@
 {% block content %}
   <div class="p-5 mt-5">
     <div class="mt-5">
-      <div class="card">
-        <div class="card-body">
-          <p class="card-text">REKLAM ALANI BURASI REKLAM ALANIDIR</p>
+      <div class="card border-0">
+        <div class="card-body p-0">
+          <img src="https://fakeimg.pl/1200x200/ff0000/?text=Reklam Alanı" class="img-fluid rounded">
         </div>
       </div>
     </div>
     <div class="mt-3">
-      <div class="card">
-        <div class="card-body">
+      <div class="card bg-body-tertiary border-0 shadow">
+        <div class="card-body text-center py-5">
           <h5 class="card-title">👉 Yönlendiriliyorsunuz</h5>
           <p class="card-text">⏳ Lütfen Bekleyin..</p>
         </div>
       </div>
     </div>
     <div class="mt-3">
-      <div class="card">
-        <div class="card-body">
-          <p class="card-text">REKLAM ALANI BURASI ALT REKLAM ALANIDIR.</p>
+      <div class="card border-0">
+        <div class="card-body p-0">
+          <img src="https://fakeimg.pl/1200x200/65CD61/?text=Reklam Alanı 2&font=lobste" class="img-fluid rounded">
         </div>
       </div>
     </div>
@@ -37,6 +37,6 @@
     // 3 saniye sonra başka bir sayfaya yönlendir
     setTimeout(function () {
       window.location.href = "{{ originalUrl }}";
-    }, 2000);
+    }, 3000);
   </script>
 {% endblock %}}
