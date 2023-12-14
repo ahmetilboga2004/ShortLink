@@ -16,7 +16,7 @@ router.post("/login", authController.loginUser);
 
 router.post(
   "/upload-profile",
-  upload.single("profileImage"),
+  upload.single("image"),
   authController.uploadProfile
 );
 

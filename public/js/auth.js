@@ -221,7 +221,7 @@ if (changeInput) {
     const file = event.target.files[0];
     if (file) {
       const formData = new FormData();
-      formData.append("profileImage", file);
+      formData.append("image", file);
 
       try {
         const response = await fetch("/upload-profile", {
