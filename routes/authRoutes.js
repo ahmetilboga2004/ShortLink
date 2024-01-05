@@ -5,7 +5,6 @@ const connectEnsureLogin = require("connect-ensure-login");
 // * MY-MODULES
 const authController = require("../controllers/authController");
 const authMiddleware = require("../middlewares/authMiddleware");
-const upload = require("../config/multerConfig");
 
 const router = express.Router();
 
