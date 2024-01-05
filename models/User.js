@@ -15,7 +15,6 @@ const UserSchema = new Schema({
     trim: true,
     lowercase: true,
   },
-  profileImage: String,
   hash: String,
   salt: String,
   role: {

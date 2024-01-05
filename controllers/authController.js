@@ -149,40 +149,6 @@ exports.profileUser = async (req, res) => {
   }
 };
 
-exports.uploadProfile = async (req, res) => {
-  try {
-    const userId = req.user.id;
-    console.log(userId);
-    const imagePath = req.file.path;
-    console.log(imagePath);
-
-    // Kullanıcıyı bul ve profil fotoğrafı alanını güncelle
-    const update = await User.findByIdAndUpdate(userId, {
-      profileImage: imagePath,
-    });
-
-    if (update) {
-      console.log("UPDATE: ", update);
-      res.json({
-        success: true,
-        message: "Profil fotoğrafı başarıyla güncellendi",
-        upload: update.profileImage,
-      });
-    } else {
-      console.error(update);
-      res.json({
-        success: false,
-        message: "Profil fotoğrafı güncellenemedi!",
-      });
-    }
-  } catch (error) {
-    res.json({
-      success: false,
-      message: error,
-    });
-  }
-};
-
 // Contact için E-posta gönderen işlev
 const sendContactMail = async (nameSurname, email, message) => {
   // E-posta gönderme işlemleri için nodemailer veya başka bir e-posta gönderme modülü kullanılabilir

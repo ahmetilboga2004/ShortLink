@@ -14,12 +14,6 @@ router.post("/contact-form", authController.contactform);
 // Kullanıcı girişi işlemi
 router.post("/login", authController.loginUser);
 
-router.post(
-  "/upload-profile",
-  upload.single("image"),
-  authController.uploadProfile
-);
-
 router.get(
   "/profile",
   connectEnsureLogin.ensureLoggedIn("/login"),
