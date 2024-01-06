@@ -1,5 +1,6 @@
 // * THIRD-PARTY MODULES
 const express = require("express");
+const passport = require("passport");
 const nunjucks = require("nunjucks");
 const dateFilter = require("nunjucks-date-filter");
 const bodyParser = require("body-parser");
