@@ -75,7 +75,7 @@ const initializeDataTable = () => {
         data: "shortLink",
         targets: 2,
         render: function (data, type, row, meta) {
-          return "http://localhost:3000/" + data;
+          return "https://short-link-flax.vercel.app/" + data;
         },
       },
       { data: "click", targets: 3 },
@@ -166,7 +166,7 @@ function fillEditLinkModal(linkId) {
 
     linkName.innerHTML = link.name;
     linkUrl.innerHTML = link.originalUrl;
-    shortLink.innerHTML = `http://localhost:3000/${link.shortLink}`;
+    shortLink.innerHTML = `https://short-link-flax.vercel.app/${link.shortLink}`;
     viewLink.innerHTML = link.click;
     createdAtLink.innerHTML = formatAndDisplayDate(link.createdAt);
     if (link.leftTime === null) {

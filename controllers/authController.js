@@ -28,7 +28,7 @@ const sendVerificationEmail = async (email, verificationKey) => {
     from: "fastshorterlink@gmail.com", // sender address
     to: email, // list of receivers
     subject: "Verify Account", // Subject line
-    html: `<strong><a href='http://localhost:3000/verify?email=${email}&key=${verificationKey}'>Verify Account Link</a><strong>`, // html body
+    html: `<strong><a href='https://short-link-flax.vercel.app/verify?email=${email}&key=${verificationKey}'>Verify Account Link</a><strong>`, // html body
   };
   try {
     const info = await transporter.sendMail(mailOptions);
@@ -419,7 +419,7 @@ const sendPasswordForgotEmail = async (email, resetKey) => {
     from: "fastshorterlink@gmail.com", // sender address
     to: email, // list of receivers
     subject: "Reset Password", // Subject line
-    html: `<strong><a href='http://localhost:3000/reset-forgot-password?email=${email}&key=${resetKey}'>Reset Password</a><strong>`, // html body
+    html: `<strong><a href='https://short-link-flax.vercel.app/reset-forgot-password?email=${email}&key=${resetKey}'>Reset Password</a><strong>`, // html body
   };
 
   transporter.sendMail(mailOptions, (error, info) => {
