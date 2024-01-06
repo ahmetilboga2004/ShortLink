@@ -1,6 +1,5 @@
 // * THIRD-PARTY MODULES
 const express = require("express");
-const passport = require("passport");
 const nunjucks = require("nunjucks");
 const dateFilter = require("nunjucks-date-filter");
 const bodyParser = require("body-parser");
@@ -34,6 +33,11 @@ const configNjk = nunjucks.configure("views", {
 });
 configNjk.addFilter("date", dateFilter);
 
+// Şablonların ve statik dosyaların konumunu bildirme
+app.set("views", path.join(__dirname, "views"));
+app.set("public", path.join(__dirname, "public"));
+app.set("publicPath", "/public");
+
 // ! MONGO STORE
 const store = new MongoDBSession({
   uri: process.env.MONGO_URI,
@@ -66,12 +70,6 @@ app.use(async (req, res, next) => {
 });
 
 // ! ROUTES
-app.get("/", (req, res) => {
-  res.render("index.html", {
-    is_header: true,
-    pageName: "home",
-  });
-});
 app.use(pageRoutes);
 app.use(authRoutes);
 app.use(linkRoutes);
@@ -84,6 +82,7 @@ app.use((req, res, next) => {
 // RUN LISTEN SERVER
 const port = process.env.PORT || 3000;
 db();
+
 app.listen(port, () => {
   console.log(`Server is running on ${port} Port`);
 });
