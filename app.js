@@ -42,7 +42,6 @@ const store = new MongoDBSession({
 
 // ! MIDDLEWARES
 app.use(express.static("public"));
-app.use("/uploads", express.static("uploads"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -67,6 +66,12 @@ app.use(async (req, res, next) => {
 });
 
 // ! ROUTES
+app.get("/", (req, res) => {
+  res.render("index.html", {
+    is_header: true,
+    pageName: "home",
+  });
+});
 app.use(pageRoutes);
 app.use(authRoutes);
 app.use(linkRoutes);
