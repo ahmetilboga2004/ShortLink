@@ -41,7 +41,7 @@
 
     "express-session": "^1.18.0",
     "mongoose": "^8.0.2",
-    "nodemailer": "^6.9.9",
+    "nodemailer": "^6.9.11",
     "nunjucks": "^3.2.4",
     "nunjucks-date-filter": "^0.1.1",
     "passport": "^0.7.0",
